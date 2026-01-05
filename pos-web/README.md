@@ -2,6 +2,10 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.4.
 
+## Backend + database
+
+The backend uses Firebase (Firestore). For local database connection + automatic seeding (including the default `root/root` user), see the repo root README: `README.md`.
+
 ## Development server
 
 To start a local development server, run:

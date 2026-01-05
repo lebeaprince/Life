@@ -1,3 +1,60 @@
+## Database connection + local seeding
+
+This repo uses **Firebase (Firestore)** as its database, accessed from the backend in `functions/` via `firebase-admin`.
+
+### Local development (recommended): connect to emulators
+
+- **Prereqs**: Node 22+, `npm`, and the Firebase CLI (`firebase --version`).
+- **Set your project id**: edit `.firebaserc` and replace `YOUR_FIREBASE_PROJECT_ID` (any string works for emulators).
+
+Install dependencies:
+
+```bash
+npm --prefix functions install
+npm --prefix pos-web install
+```
+
+Start emulators + auto-seed on startup (creates the default `root/root` user):
+
+```bash
+bash scripts/start-local.sh
+```
+
+What this does:
+- Starts **Auth + Firestore + Functions** emulators (ports are defined in `firebase.json`)
+- Runs `functions/src/scripts/seed.ts` (via `npm --prefix functions run seed`)
+- Creates a privileged default user:
+  - **username**: `root`
+  - **password**: `root`
+  - **email (Firebase Auth)**: `root@local.test`
+
+If you also want the **Hosting** emulator (so `/api/*` requests are rewritten exactly like production), build the web app and start with:
+
+```bash
+npm --prefix pos-web run build
+START_HOSTING=true bash scripts/start-local.sh
+```
+
+You can override defaults:
+
+```bash
+ROOT_USERNAME=root ROOT_PASSWORD=root ROOT_EMAIL=root@local.test bash scripts/start-local.sh
+```
+
+### Connecting to a real Firebase project (non-emulator)
+
+By default the seed script **refuses** to create the `root` user against a non-emulator project to avoid accidental production changes.
+
+If you intentionally want to seed a real project, you must:
+
+```bash
+export FIREBASE_PROJECT_ID="your-real-project-id"
+export ALLOW_PROD_SEED=true
+cd functions && npm run seed
+```
+
+To run locally against a real project, you’ll also need valid Google credentials for `firebase-admin` (for example by using Application Default Credentials or setting `GOOGLE_APPLICATION_CREDENTIALS` to a service account JSON).
+
 # SaaS POS (Angular + Firebase)
 
 Cloud SaaS point-of-sale starter built for **Firebase deployment**:

@@ -9,6 +9,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:watch": "tsc -p tsconfig.json --watch",
+    "seed": "npm run build && node lib/scripts/seed.js",
     "serve": "firebase emulators:start --only functions"
   },
   "dependencies": {
