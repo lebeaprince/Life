@@ -1,0 +1,79 @@
+<div class="wrap">
+  <section class="hero panel">
+    <div class="heroTop">
+      <div class="kicker">SaaS POS Platform</div>
+      <h1 class="headline">Modern point‑of‑sale with client-specific dashboards and themes.</h1>
+      <p class="subhead">
+        The landing page advertises the system and offers login. Once logged in, users are redirected to the home
+        dashboard and navigate via the collapsible icon sidebar.
+      </p>
+    </div>
+
+    <div class="featureGrid">
+      <div class="feature">
+        <div class="featureTitle">Collapsible sidebar</div>
+        <div class="featureBody">Icons + active state, consistent across every page via the master layout.</div>
+      </div>
+      <div class="feature">
+        <div class="featureTitle">Client-specific themes</div>
+        <div class="featureBody">Custom colors and optional background images per client.</div>
+      </div>
+      <div class="feature">
+        <div class="featureTitle">Dashboard home</div>
+        <div class="featureBody">KPIs and notices tailored to each client.</div>
+      </div>
+    </div>
+
+    <div class="themePicker">
+      <div class="themePickerTitle">Preview client themes:</div>
+      <div class="themePickerBtns">
+        @for (t of themes(); track t.clientId) {
+          <button class="btn" (click)="pickTheme(t.clientId)" [disabled]="theme().clientId === t.clientId">
+            {{ t.clientName }}
+          </button>
+        }
+      </div>
+      <div class="themePickerHint">
+        Tip: use an email containing <strong>demo</strong> (e.g. <code>demo@example.com</code>) to log into the demo
+        client.
+      </div>
+    </div>
+  </section>
+
+  <section class="login panel">
+    <div class="loginHeader">
+      <div class="loginTitle">Log in</div>
+      <div class="loginHint">Enter any credentials to continue (demo auth).</div>
+    </div>
+
+    @if (error()) {
+      <div class="alert alertError">{{ error() }}</div>
+    }
+
+    <form (submit)="$event.preventDefault(); login()">
+      <label class="field">
+        <div class="fieldLabel">Email</div>
+        <input class="input" type="email" autocomplete="username" [ngModel]="email()" (ngModelChange)="email.set($event)" name="email" />
+      </label>
+
+      <label class="field">
+        <div class="fieldLabel">Password</div>
+        <input
+          class="input"
+          type="password"
+          autocomplete="current-password"
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
+          name="password"
+        />
+      </label>
+
+      <button class="btn primary loginBtn" type="submit" [disabled]="loggingIn()">Continue</button>
+    </form>
+
+    <div class="loginNote">
+      After login you’ll be redirected to <code>/home</code>. Navigation is via the inherited sidebar.
+    </div>
+  </section>
+</div>
+

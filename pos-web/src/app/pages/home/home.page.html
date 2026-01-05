@@ -1,0 +1,49 @@
+<div class="wrap">
+  <section class="panel header">
+    <div>
+      <div class="title">Home dashboard</div>
+      <div class="subtitle">
+        Client: <strong>{{ data().clientName }}</strong> • As of: {{ data().asOf }}
+      </div>
+    </div>
+    <div class="badge">
+      <div class="badgeDot"></div>
+      <div class="badgeText">Live</div>
+    </div>
+  </section>
+
+  <section class="kpis">
+    @for (kpi of data().kpis; track kpi.label) {
+      <div class="panel kpi">
+        <div class="kpiLabel">{{ kpi.label }}</div>
+        <div class="kpiValue">{{ kpi.value }}</div>
+        @if (kpi.hint) {
+          <div class="kpiHint">{{ kpi.hint }}</div>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="panel notices">
+    <div class="sectionTitle">Notices</div>
+    <div class="noticeList">
+      @for (n of data().notices; track n.title) {
+        <div class="notice">
+          <div class="noticeTitle">{{ n.title }}</div>
+          <div class="noticeBody">{{ n.body }}</div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="panel themePreview">
+    <div class="sectionTitle">Theme preview</div>
+    <div class="previewRow">
+      <div class="chip" [style.background]="theme().accentColor">Accent</div>
+      <div class="chip" [style.background]="theme().accentColor2">Accent 2</div>
+      <div class="chip mutedChip">Muted</div>
+    </div>
+    <div class="themeHint">This page is styled via CSS variables set by the master layout.</div>
+  </section>
+</div>
+
