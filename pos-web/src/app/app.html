@@ -1,0 +1,134 @@
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">POS</div>
+      <div class="titles">
+        <div class="title">{{ title }}</div>
+        <div class="subtitle">Angular + TypeScript • Firebase Hosting + Functions</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" (click)="refreshProducts()" [disabled]="productsLoading()">
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="panel">
+      <div class="panelHeader">
+        <h2>Catalog</h2>
+        <div class="hint">Backed by `/api/catalog`</div>
+      </div>
+
+      @if (productsError()) {
+        <div class="alert alertError">{{ productsError() }}</div>
+      }
+
+      <div class="addProduct">
+        <input
+          class="input"
+          placeholder="New product name"
+          [ngModel]="newProductName()"
+          (ngModelChange)="newProductName.set($event)"
+        />
+        <input
+          class="input"
+          type="number"
+          min="0"
+          step="0.01"
+          placeholder="Price"
+          [ngModel]="newProductPrice()"
+          (ngModelChange)="newProductPrice.set($event === '' ? null : +$event)"
+        />
+        <button class="btn primary" (click)="createProduct()" [disabled]="addingProduct()">
+          Add
+        </button>
+      </div>
+
+      @if (addProductError()) {
+        <div class="alert alertError">{{ addProductError() }}</div>
+      }
+
+      @if (productsLoading()) {
+        <div class="skeleton">Loading products…</div>
+      } @else {
+        <div class="list">
+          @for (p of products(); track p.id) {
+            <div class="row">
+              <div class="rowMain">
+                <div class="rowTitle">{{ p.name }}</div>
+                <div class="rowMeta">{{ p.price | currency }}</div>
+              </div>
+              <div class="rowActions">
+                <button class="btn" (click)="addToCart(p)">Add</button>
+                <button class="btn danger" (click)="deleteProduct(p.id)">Delete</button>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty">No products yet. Add one above.</div>
+          }
+        </div>
+      }
+    </section>
+
+    <section class="panel">
+      <div class="panelHeader">
+        <h2>Cart</h2>
+        <div class="hint">Checkout posts to `/api/sales/checkout`</div>
+      </div>
+
+      @if (checkoutError()) {
+        <div class="alert alertError">{{ checkoutError() }}</div>
+      }
+      @if (lastReceiptId()) {
+        <div class="alert alertOk">Checkout complete. Receipt: {{ lastReceiptId() }}</div>
+      }
+
+      <div class="list">
+        @for (line of cart(); track line.productId) {
+          <div class="row">
+            <div class="rowMain">
+              <div class="rowTitle">{{ line.name }}</div>
+              <div class="rowMeta">
+                {{ line.unitPrice | currency }} ×
+                <input
+                  class="qty"
+                  type="number"
+                  min="0"
+                  [value]="line.qty"
+                  (change)="setQty(line.productId, ($any($event.target).valueAsNumber ?? 0))"
+                />
+                = {{ line.unitPrice * line.qty | currency }}
+              </div>
+            </div>
+            <div class="rowActions">
+              <button class="btn danger" (click)="removeFromCart(line.productId)">Remove</button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty">Add products to start a sale.</div>
+        }
+      </div>
+
+      <div class="totals">
+        <div class="totalsRow">
+          <div class="totalsLabel">Subtotal</div>
+          <div class="totalsValue">{{ subtotal() | currency }}</div>
+        </div>
+      </div>
+
+      <div class="checkout">
+        <button class="btn" (click)="clearCart()" [disabled]="cart().length === 0">Clear</button>
+        <button
+          class="btn primary"
+          (click)="checkout()"
+          [disabled]="cart().length === 0 || checkoutLoading()"
+        >
+          Checkout
+        </button>
+      </div>
+    </section>
+  </main>
+</div>
