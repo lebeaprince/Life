@@ -15,7 +15,7 @@ export FIREBASE_PROJECT_ID="${PROJECT_ID}"
 export GCLOUD_PROJECT="${PROJECT_ID}"
 
 # These env vars make Admin SDK talk to emulators from the seed script.
-export FIRESTORE_EMULATOR_HOST="${FIRESTORE_EMULATOR_HOST:-127.0.0.1:8080}"
+export FIRESTORE_EMULATOR_HOST="${FIRESTORE_EMULATOR_HOST:-127.0.0.1:4201}"
 export FIREBASE_AUTH_EMULATOR_HOST="${FIREBASE_AUTH_EMULATOR_HOST:-127.0.0.1:9099}"
 
 # Default root credentials (override if you want)
