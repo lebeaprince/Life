@@ -81,11 +81,10 @@ function loadConfig(): SeedConfig {
 }
 
 function ensureAdminApp(projectId: string) {
-  // Avoid double-init when rerun in same process
-  const existing = admin.apps.find((a) => a?.name === 'seed');
-  if (existing) return existing;
-
-  return admin.initializeApp({ projectId }, 'seed');
+  // Seed script uses `admin.firestore()` / `admin.auth()` which target the *default*
+  // app. Make sure the default app exists (avoid named-app init here).
+  if (admin.apps.length > 0) return admin.app();
+  return admin.initializeApp({ projectId });
 }
 
 function hashPassword(password: string, saltHex?: string) {

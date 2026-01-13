@@ -65,11 +65,11 @@ function loadConfig() {
     };
 }
 function ensureAdminApp(projectId) {
-    // Avoid double-init when rerun in same process
-    const existing = firebase_admin_1.default.apps.find((a) => a?.name === 'seed');
-    if (existing)
-        return existing;
-    return firebase_admin_1.default.initializeApp({ projectId }, 'seed');
+    // Seed script uses `admin.firestore()` / `admin.auth()` which target the *default*
+    // app. Make sure the default app exists (avoid named-app init here).
+    if (firebase_admin_1.default.apps.length > 0)
+        return firebase_admin_1.default.app();
+    return firebase_admin_1.default.initializeApp({ projectId });
 }
 function hashPassword(password, saltHex) {
     const salt = saltHex ? Buffer.from(saltHex, 'hex') : node_crypto_1.default.randomBytes(16);
