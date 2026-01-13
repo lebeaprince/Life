@@ -14,7 +14,7 @@ npm --prefix functions install
 npm --prefix pos-web install
 ```
 
-Start emulators + auto-seed on startup (creates the default `root/root` user):
+Start emulators + auto-seed on startup (creates the default `root/root123` user):
 
 ```bash
 bash scripts/start-local.sh
@@ -25,7 +25,7 @@ What this does:
 - Runs `functions/src/scripts/seed.ts` (via `npm --prefix functions run seed`)
 - Creates a privileged default user:
   - **username**: `root`
-  - **password**: `root`
+  - **password**: `root123`
   - **email (Firebase Auth)**: `root@local.test`
 
 If you also want the **Hosting** emulator (so `/api/*` requests are rewritten exactly like production), build the web app and start with:
@@ -38,7 +38,7 @@ START_HOSTING=true bash scripts/start-local.sh
 You can override defaults:
 
 ```bash
-ROOT_USERNAME=root ROOT_PASSWORD=root ROOT_EMAIL=root@local.test bash scripts/start-local.sh
+ROOT_USERNAME=root ROOT_PASSWORD=root123 ROOT_EMAIL=root@local.test bash scripts/start-local.sh
 ```
 
 ### Connecting to a real Firebase project (non-emulator)

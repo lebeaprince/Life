@@ -63,11 +63,22 @@ function loadConfig(): SeedConfig {
     Boolean(process.env.FIRESTORE_EMULATOR_HOST) || Boolean(process.env.FIREBASE_AUTH_EMULATOR_HOST);
 
   const rootUsername = (process.env.ROOT_USERNAME ?? 'root').trim() || 'root';
-  const rootPassword = process.env.ROOT_PASSWORD ?? 'root';
+  // Firebase Auth requires passwords to be at least 6 characters.
+  // Keep the default dev password valid to avoid `FirebaseAuthError` during seeding.
+  const rootPassword = process.env.ROOT_PASSWORD ?? 'root123';
   const rootEmail = (process.env.ROOT_EMAIL ?? `${rootUsername}@local.test`).trim();
 
   const forceRootPassword = (process.env.FORCE_ROOT_PASSWORD ?? '').toLowerCase() === 'true';
   const allowProdSeed = (process.env.ALLOW_PROD_SEED ?? '').toLowerCase() === 'true';
+
+  if (typeof rootPassword !== 'string' || rootPassword.length < 6) {
+    throw new Error(
+      [
+        'Invalid ROOT_PASSWORD: Firebase Auth requires a password of at least 6 characters.',
+        'Set ROOT_PASSWORD to a 6+ character value (e.g. ROOT_PASSWORD=root123).'
+      ].join(' ')
+    );
+  }
 
   return {
     projectId,
