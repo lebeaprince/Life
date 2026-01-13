@@ -1,6 +1,8 @@
 {
   "projects": {
-    "default": "YOUR_FIREBASE_PROJECT_ID"
-  }
+    "default": "pointofsale-26486",
+    "Dev": "pointofsale-26486"
+  },
+  "targets": {},
+  "etags": {}
 }
-

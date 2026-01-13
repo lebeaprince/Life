@@ -23,3 +23,18 @@ export type CheckoutResponse = {
   createdAt: string;
 };
 
+export type Material = {
+  id: string;
+  name: string;
+  price: number;
+  currency?: string;
+};
+
+export type Order = {
+  id: string;
+  orderNumber: string;
+  total: number;
+  customerNumber: string;
+  currency?: string;
+};
+

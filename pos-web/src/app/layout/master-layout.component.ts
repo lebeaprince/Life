@@ -31,7 +31,10 @@ export class MasterLayoutComponent {
     if (!this.isLoggedIn()) return [];
     return [
       { label: 'Home', path: '/home', icon: '⌂' },
-      { label: 'POS', path: '/pos', icon: '≡' }
+      { label: 'Sale', path: '/pos', icon: '≡' },
+	  { label: 'Product', path: '/product', icon: '◍' },
+	  { label: 'Material', path: '/material', icon: '⌂' },
+	  { label: 'Order', path: '/order', icon: '⌂' },
     ];
   });
 

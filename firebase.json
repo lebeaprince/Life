@@ -5,22 +5,30 @@
       "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
     }
   ],
-  "hosting": [
-    {
-      "public": "pos-web/dist/pos-web",
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-      "predeploy": ["npm --prefix pos-web run build"],
-      "rewrites": [
-        { "source": "/api/auth/**", "function": "auth" },
-        { "source": "/api/catalog/**", "function": "catalog" },
-        { "source": "/api/sales/**", "function": "sales" },
-        { "source": "**", "destination": "/index.html" }
-      ]
-    }
-  ],
+  "hosting": {
+
+    "public": "pos-web/dist/pos-web",
+
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+
+    "predeploy": ["npm --prefix pos-web run build"],
+
+    "rewrites": [
+
+      { "source": "/api/auth/**", "function": "auth" },
+
+      { "source": "/api/catalog/**", "function": "catalog" },
+
+      { "source": "/api/sales/**", "function": "sales" },
+
+      { "source": "**", "destination": "/index.html" }
+
+    ]
+
+  },
   "emulators": {
     "auth": { "port": 9099 },
-    "firestore": { "port": 8080 },
+    "firestore": { "host": "localhost", "port": 4201 },
     "functions": { "port": 5001 },
     "hosting": { "port": 5000 },
     "ui": { "enabled": true, "port": 4000 },
