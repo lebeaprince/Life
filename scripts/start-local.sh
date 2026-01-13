@@ -20,7 +20,8 @@ export FIREBASE_AUTH_EMULATOR_HOST="${FIREBASE_AUTH_EMULATOR_HOST:-127.0.0.1:909
 
 # Default root credentials (override if you want)
 export ROOT_USERNAME="${ROOT_USERNAME:-root}"
-export ROOT_PASSWORD="${ROOT_PASSWORD:-root}"
+# Firebase Auth requires passwords to be at least 6 characters.
+export ROOT_PASSWORD="${ROOT_PASSWORD:-root123}"
 export ROOT_EMAIL="${ROOT_EMAIL:-${ROOT_USERNAME}@local.test}"
 
 cleanup() {
