@@ -2,12 +2,12 @@
   "name": "pro",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
+    "ng": "node ./ng-wrapper.js",
+    "start": "node ./ng-wrapper.js serve",
+    "build": "node ./ng-wrapper.js build",
+    "test": "node ./ng-wrapper.js test",
+    "lint": "node ./ng-wrapper.js lint",
+    "e2e": "node ./ng-wrapper.js e2e",
     "start:server": "nodemon ./backend/server.js"
   },
   "private": true,
