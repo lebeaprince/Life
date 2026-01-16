@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { jwtSecret } = require("../config");
 const checkDocAuth = require("../middleware/check-docAuth");
 
 const DoctorUser = require('../models/doctorUser');
@@ -56,7 +57,7 @@ router.post("/doctorLogin" , (req, res ,  next)=>{
     }
     const token = jwt.sign(
       {email: fetchedUser.email , userId : fetchedUser ._id, name:fetchedUser.name, contact:fetchedUser.contact , docId:fetchedUser.docId} ,
-      'this_is_the_webToken_secret_key' ,
+      jwtSecret,
       { expiresIn : "1h"}
       );
       res.status(200).json({
