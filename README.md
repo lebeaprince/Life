@@ -1,139 +1,136 @@
-## Database connection + local seeding
+# Pharmacy Manegement System
 
-This repo uses **Firebase (Firestore)** as its database, accessed from the backend in `functions/` via `firebase-admin`.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.6.
 
-### Local development (recommended): connect to emulators
+Updates and bug fixes are done daily :100:.
 
-- **Prereqs**: Node 22+, `npm`, and the Firebase CLI (`firebase --version`).
-- **Set your project id**: edit `.firebaserc` and replace `YOUR_FIREBASE_PROJECT_ID` (any string works for emulators).
+Star :star:  the repo to help the developers :innocent:
 
-Install dependencies:
 
-```bash
-npm --prefix functions install
-npm --prefix pos-web install
-```
+## 🦄 Product Features and Screen Shots
 
-Start emulators + auto-seed on startup (creates the default `root/root123` user):
 
-```bash
-bash scripts/start-local.sh
-```
 
-What this does:
-- Starts **Auth + Firestore + Functions** emulators (ports are defined in `firebase.json`)
-- Runs `functions/src/scripts/seed.ts` (via `npm --prefix functions run seed`)
-- Creates a privileged default user:
-  - **username**: `root`
-  - **password**: `root123`
-  - **email (Firebase Auth)**: `root@local.test`
+<table>
+  <tr>
+    <td>Login</td>
+     <td>SignUp</td>
+     
+  </tr>
+  <tr>
+    <td><img src="https://i.ibb.co/0BCPCQB/Screenshot-2020-08-30-at-00-02-41.png" width="600"></td>
+    <td><img src="https://i.ibb.co/fv4F5jR/Screenshot-2020-08-30-at-00-02-54.png" width="600"></td>
+  </tr>
+ </table>
+ 
+<img src="https://i.ibb.co/W0FKBk1/Screenshot-2020-08-30-at-00-03-31.png" > 
 
-If you also want the **Hosting** emulator (so `/api/*` requests are rewritten exactly like production), build the web app and start with:
+<table>
+  <tr>
+    <td>Doctor Oders</td>
+     <td>Verified Doctor Oders</td>
+     
+  </tr>
+  <tr>
+    <td><img src="https://i.ibb.co/Dk4GP77/Screenshot-2020-08-30-at-00-05-09.png" width="600"></td>
+    <td><img src="https://i.ibb.co/HNB2B9D/Screenshot-2020-08-30-at-00-05-20.png" width="600"></td>
+  </tr>
+ </table>
+ 
+ <table>
+  <tr>
+    <td>Point Of Sales</td> 
+  </tr>
+  <tr>
+    <td><img src="https://i.ibb.co/1vCrYKk/Screenshot-2020-08-30-at-00-06-11.png"></td>
+  </tr>
+ </table>
+ 
+ <table>
+  <tr>
+    <td>Checking out drugs from Point Of Sales</td> 
+  </tr>
+  <tr>
+    <td><img src="https://i.ibb.co/wS7T14K/Screenshot-2020-08-30-at-00-06-49.png"></td>
+  </tr>
+ </table>
+ 
+<table>
+  <tr>
+    <td>Supplier Table </td>
+     <td>Supplier Form</td>
+     
+  </tr>
+  <tr>
+    <td><img src="https://i.ibb.co/0jCfM54/Screenshot-2020-08-30-at-00-07-19.png" width="600"></td>
+    <td><img src="https://i.ibb.co/Wy2j4HV/Screenshot-2020-08-30-at-00-07-07.png" width="600"></td>
+  </tr>
+ </table>
+ 
+ <table>
+  <tr>
+    <td>Sales Charts generated</td> 
+  </tr>
+  <tr>
+    <td><img src="https://i.ibb.co/zNxh1pD/Screenshot-2020-08-30-at-00-07-32.png"></td>
+  </tr>
+ </table>
+ 
+ <table>
+  <tr>
+    <td>Sends Email requests to suppliers when drugs expire </td>
+     <td>Expired & about to expire table</td>
+     
+  </tr>
+  <tr>
+    <td><img src="https://i.ibb.co/s6ZB4ny/Screenshot-2020-08-30-at-00-08-22.png" width="600"></td>
+    <td><img src="https://i.ibb.co/F77KhWJ/Screenshot-2020-08-30-at-00-08-01.png" width="600"></td>
+  </tr>
+ </table>
+ 
+ 
+ <table>
+  <tr>
+    <td>Preferences or Settings </td>
+     <td>Out of Stock & About to get out of stock</td>
+     
+  </tr>
+  <tr>
+    <td><img src="https://i.ibb.co/4YmKk4Y/Screenshot-2020-08-30-at-00-08-49.png" width="600"></td>
+    <td><img src="https://i.ibb.co/0Z3qbrh/Screenshot-2020-08-30-at-00-08-32.png" width="600"></td>
+  </tr>
+ </table>
 
-```bash
-npm --prefix pos-web run build
-START_HOSTING=true bash scripts/start-local.sh
-```
 
-You can override defaults:
+## 🚀 Build Instructions / How to start the project 
 
-```bash
-ROOT_USERNAME=root ROOT_PASSWORD=root123 ROOT_EMAIL=root@local.test bash scripts/start-local.sh
-```
+1) Downloard/clone the Contributor branch of the repository
+2) Open terminal/command prompt 
+3) cd (change directory) in to the project folder
+4) Run `npm install` in your terminal
+5) Run `ng serve` to run the Angular frontend
+6) Run `npm run start:server` to run the backend Node server
+7) Open your browser and navigate to `http://localhost:4200/`
 
-### Connecting to a real Firebase project (non-emulator)
 
-By default the seed script **refuses** to create the `root` user against a non-emulator project to avoid accidental production changes.
+## 🚨 Development server
 
-If you intentionally want to seed a real project, you must:
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `npm run start:serve` for a backend server. Navigate to `http://localhost:3000/`. 
 
-```bash
-export FIREBASE_PROJECT_ID="your-real-project-id"
-export ALLOW_PROD_SEED=true
-cd functions && npm run seed
-```
+## 🚨 Code scaffolding
 
-To run locally against a real project, you’ll also need valid Google credentials for `firebase-admin` (for example by using Application Default Credentials or setting `GOOGLE_APPLICATION_CREDENTIALS` to a service account JSON).
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-# SaaS POS (Angular + Firebase)
+## 🚨 Build
 
-Cloud SaaS point-of-sale starter built for **Firebase deployment**:
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-- **Frontend**: Angular (TypeScript) → Firebase Hosting
-- **Backend**: Node.js (TypeScript) “microservices” → Firebase Cloud Functions
-- **Data**: Firestore (collections: `products`, `sales`)
+## 🚨 Running unit tests
 
-## Repo layout
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-- `pos-web/`: Angular POS web app
-- `functions/`: Firebase Functions (Node/TS) backend
-- `firebase.json`: Hosting + Functions config (includes `/api/*` rewrites)
+## 🚨 Running end-to-end tests
 
-## Local development
-
-### 1) Frontend
-
-```bash
-cd pos-web
-npm install
-npm start
-```
-
-Angular dev server runs locally. In production (Firebase Hosting), `/api/*` is proxied to Functions via rewrites in `firebase.json`.
-
-### 2) Backend (Functions)
-
-```bash
-cd functions
-npm install
-npm run build
-```
-
-To run emulators (requires Firebase CLI):
-
-```bash
-npm i -g firebase-tools
-firebase emulators:start
-```
-
-## Services (microservice-style)
-
-Each service is its own Express app exported as an HTTPS function:
-
-- **catalog**: `functions/src/services/catalog.ts`
-  - `GET /api/catalog/products`
-  - `POST /api/catalog/products`
-  - `DELETE /api/catalog/products/:id`
-- **sales**: `functions/src/services/sales.ts`
-  - `POST /api/sales/checkout`
-- **auth**: `functions/src/services/auth.ts`
-  - `GET /api/auth/me` (expects `Authorization: Bearer <Firebase ID token>`)
-
-## Firebase deploy
-
-1) Create/select a Firebase project, then set your project id:
-
-- Edit `.firebaserc` and replace `YOUR_FIREBASE_PROJECT_ID`, or run:
-
-```bash
-firebase use --add
-```
-
-2) Deploy:
-
-```bash
-firebase deploy
-```
-
-`firebase.json` is configured to:
-
-- Build **Functions** with `npm --prefix functions run build`
-- Build **Angular** with `npm --prefix pos-web run build`
-- Serve the Angular build from `pos-web/dist/pos-web`
-- Rewrite `/api/auth/**`, `/api/catalog/**`, `/api/sales/**` to Functions
-
-## Security note
-
-`firestore.rules` is currently wide open for bootstrapping (`allow read, write: if true;`).
-Lock this down before production (Firebase Auth + roles/claims).
+Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
