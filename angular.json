@@ -39,8 +39,7 @@
               "node_modules/flickity/dist/flickity.pkgd.min.js",
               "node_modules/chartist/dist/chartist.min.js",
               "node_modules/hammerjs/hammer.min.js",
-              "node_modules/chart.js/dist/Chart.js",
-              "node_modules/flickity/dist/flickity.pkgd.min.js"
+              "node_modules/chart.js/dist/Chart.js"
 
             ]
           },
@@ -106,8 +105,8 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
-              "./node_modules/font-awesome/css/",
-              "./node_modules/bulma/css/bluma.css",
+              "./node_modules/font-awesome/css/font-awesome.css",
+              "./node_modules/bulma/css/bulma.css",
               "src/styles.css"
             ],
             "scripts": [

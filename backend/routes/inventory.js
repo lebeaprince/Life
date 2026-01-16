@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const nodemailer = require("nodemailer");
+const path = require("path");
+const { createTransporter, mailFrom } = require("../mailer");
 
 const MIME_TYPE_MAP ={
   'image/png' : 'png',
@@ -11,6 +12,7 @@ const MIME_TYPE_MAP ={
 
 const Inventory = require('../models/inventory');
 
+const imagesPath = path.join(__dirname, "..", "images");
 const storage =multer.diskStorage({
   destination: (req, file ,cb) =>{
     const isValid  = MIME_TYPE_MAP[file.mimetype];
@@ -18,7 +20,7 @@ const storage =multer.diskStorage({
     if(isValid){
       error = null;
     }
-    cb(error, "images");
+    cb(error, imagesPath);
   },
   filename :(req, file ,cb) => {
     const name = file.originalname.toLowerCase().split(' ').join('-');
@@ -205,30 +207,23 @@ router.delete("/:id", (req, res, next) => {
 });
 
 
-router.post("/sendmail", (req, res) => {
+router.post("/sendmail", async (req, res) => {
   console.log("request came");
-  let user = req.body;
-  sendMail(user, info => {
+  try {
+    const info = await sendMail(req.body);
     console.log(`The mail has been send 😃 and the id is ${info.messageId}`);
     res.send(info);
-  });
+  } catch (error) {
+    console.error("Failed to send email", error);
+    res.status(500).json({ message: "Failed to send email." });
+  }
 });
 
 
-async function sendMail(user, callback) {
-  // reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: "pharmacare.contactus@gmail.com",
-      pass: "lalana1011294"
-    }
-  });
-
-  let mailOptions = {
-    from: '"Pharma Care Pharmacies"<example.gmail.com>', // sender address
+async function sendMail(user) {
+  const transporter = createTransporter();
+  const mailOptions = {
+    from: mailFrom, // sender address
     to: user.email, // list of receivers
     subject: "Requesting New Drug Oder "+user.name, // Subject line
     html: `
@@ -296,39 +291,29 @@ async function sendMail(user, callback) {
     `
   };
 
-  // send mail with defined transport object
-  let info = await transporter.sendMail(mailOptions);
-
-  callback(info);
+  return transporter.sendMail(mailOptions);
 }
 
 
 
 
-router.post("/sendmailOutOfStock", (req, res) => {
+router.post("/sendmailOutOfStock", async (req, res) => {
   console.log("request came");
-  let user = req.body;
-  sendmailOutOfStock(user, info => {
+  try {
+    const info = await sendmailOutOfStock(req.body);
     console.log(`The mail has been send 😃 and the id is ${info.messageId}`);
     res.send(info);
-  });
+  } catch (error) {
+    console.error("Failed to send email", error);
+    res.status(500).json({ message: "Failed to send email." });
+  }
 });
 
 
-async function sendmailOutOfStock(user, callback) {
-  // reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: "pharmacare.contactus@gmail.com",
-      pass: "lalana1011294"
-    }
-  });
-
-  let mailOptions = {
-    from: '"Pharma Care Pharmacies"<example.gmail.com>', // sender address
+async function sendmailOutOfStock(user) {
+  const transporter = createTransporter();
+  const mailOptions = {
+    from: mailFrom, // sender address
     to: user.email, // list of receivers
     subject: "Requesting New Drug Oder "+user.name, // Subject line
     html: `
@@ -396,10 +381,7 @@ async function sendmailOutOfStock(user, callback) {
     `
   };
 
-  // send mail with defined transport object
-  let info = await transporter.sendMail(mailOptions);
-
-  callback(info);
+  return transporter.sendMail(mailOptions);
 }
 
 module.exports = router;

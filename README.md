@@ -1,4 +1,4 @@
-# Pharmacy Manegement System
+# Pharmacy Management System
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.6.
 
@@ -104,7 +104,7 @@ Star :star:  the repo to help the developers :innocent:
 
 ## 🚀 Build Instructions / How to start the project 
 
-1) Downloard/clone the Contributor branch of the repository
+1) Download/clone the Contributor branch of the repository
 2) Open terminal/command prompt 
 3) cd (change directory) in to the project folder
 4) Run `npm install` in your terminal
@@ -112,11 +112,26 @@ Star :star:  the repo to help the developers :innocent:
 6) Run `npm run start:server` to run the backend Node server
 7) Open your browser and navigate to `http://localhost:4200/`
 
+## 🔐 Environment variables
+
+Set these before starting the backend server:
+
+- `MONGODB_URI` (defaults to `mongodb://127.0.0.1:27017/pharmacy`)
+- `JWT_SECRET` (replace the default `change-me` value)
+- `SMTP_USER` and `SMTP_PASS` (required for email notifications)
+- Optional: `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_FROM`
+
+Example:
+
+- `export MONGODB_URI="mongodb://127.0.0.1:27017/pharmacy"`
+- `export JWT_SECRET="replace-with-a-long-random-string"`
+- `export SMTP_USER="you@example.com"`
+- `export SMTP_PASS="app-password"`
 
 ## 🚨 Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-Run `npm run start:serve` for a backend server. Navigate to `http://localhost:3000/`. 
+Run `npm run start:server` for a backend server. Navigate to `http://localhost:3000/`. 
 
 ## 🚨 Code scaffolding
 
