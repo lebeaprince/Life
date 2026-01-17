@@ -116,6 +116,8 @@ Star :star:  the repo to help the developers :innocent:
 
 If you see `error:03000086:digital envelope routines::initialization error` with Node 17+, use the npm scripts in this repo (they apply the legacy OpenSSL flag). If you run `ng` directly, set `NODE_OPTIONS=--openssl-legacy-provider`.
 
+If you see `Could not find @angular/cli version 'latest'`, avoid installing the CLI globally. Run `npm install` (with dev dependencies) and use the repo scripts like `npm start`. If you still need to install the CLI manually, use the pinned version from `package.json` (example: `npm install -D @angular/cli@~8.2.2`).
+
 ## 🔐 Environment variables
 
 Set these before starting the backend server:
