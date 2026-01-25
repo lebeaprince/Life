@@ -1,157 +1,59 @@
-# Pharmacy Management System
+# Pos
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.6.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.1.
 
-Updates and bug fixes are done daily :100:.
+## Development server
 
-Star :star:  the repo to help the developers :innocent:
+To start a local development server, run:
 
+```bash
+ng serve
+```
 
-## 🦄 Product Features and Screen Shots
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
+## Code scaffolding
 
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
 
-<table>
-  <tr>
-    <td>Login</td>
-     <td>SignUp</td>
-     
-  </tr>
-  <tr>
-    <td><img src="https://i.ibb.co/0BCPCQB/Screenshot-2020-08-30-at-00-02-41.png" width="600"></td>
-    <td><img src="https://i.ibb.co/fv4F5jR/Screenshot-2020-08-30-at-00-02-54.png" width="600"></td>
-  </tr>
- </table>
- 
-<img src="https://i.ibb.co/W0FKBk1/Screenshot-2020-08-30-at-00-03-31.png" > 
+```bash
+ng generate component component-name
+```
 
-<table>
-  <tr>
-    <td>Doctor Oders</td>
-     <td>Verified Doctor Oders</td>
-     
-  </tr>
-  <tr>
-    <td><img src="https://i.ibb.co/Dk4GP77/Screenshot-2020-08-30-at-00-05-09.png" width="600"></td>
-    <td><img src="https://i.ibb.co/HNB2B9D/Screenshot-2020-08-30-at-00-05-20.png" width="600"></td>
-  </tr>
- </table>
- 
- <table>
-  <tr>
-    <td>Point Of Sales</td> 
-  </tr>
-  <tr>
-    <td><img src="https://i.ibb.co/1vCrYKk/Screenshot-2020-08-30-at-00-06-11.png"></td>
-  </tr>
- </table>
- 
- <table>
-  <tr>
-    <td>Checking out drugs from Point Of Sales</td> 
-  </tr>
-  <tr>
-    <td><img src="https://i.ibb.co/wS7T14K/Screenshot-2020-08-30-at-00-06-49.png"></td>
-  </tr>
- </table>
- 
-<table>
-  <tr>
-    <td>Supplier Table </td>
-     <td>Supplier Form</td>
-     
-  </tr>
-  <tr>
-    <td><img src="https://i.ibb.co/0jCfM54/Screenshot-2020-08-30-at-00-07-19.png" width="600"></td>
-    <td><img src="https://i.ibb.co/Wy2j4HV/Screenshot-2020-08-30-at-00-07-07.png" width="600"></td>
-  </tr>
- </table>
- 
- <table>
-  <tr>
-    <td>Sales Charts generated</td> 
-  </tr>
-  <tr>
-    <td><img src="https://i.ibb.co/zNxh1pD/Screenshot-2020-08-30-at-00-07-32.png"></td>
-  </tr>
- </table>
- 
- <table>
-  <tr>
-    <td>Sends Email requests to suppliers when drugs expire </td>
-     <td>Expired & about to expire table</td>
-     
-  </tr>
-  <tr>
-    <td><img src="https://i.ibb.co/s6ZB4ny/Screenshot-2020-08-30-at-00-08-22.png" width="600"></td>
-    <td><img src="https://i.ibb.co/F77KhWJ/Screenshot-2020-08-30-at-00-08-01.png" width="600"></td>
-  </tr>
- </table>
- 
- 
- <table>
-  <tr>
-    <td>Preferences or Settings </td>
-     <td>Out of Stock & About to get out of stock</td>
-     
-  </tr>
-  <tr>
-    <td><img src="https://i.ibb.co/4YmKk4Y/Screenshot-2020-08-30-at-00-08-49.png" width="600"></td>
-    <td><img src="https://i.ibb.co/0Z3qbrh/Screenshot-2020-08-30-at-00-08-32.png" width="600"></td>
-  </tr>
- </table>
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
 
+```bash
+ng generate --help
+```
 
-## 🚀 Build Instructions / How to start the project 
+## Building
 
-1) Download/clone the Contributor branch of the repository
-2) Open terminal/command prompt 
-3) cd (change directory) in to the project folder
-4) Run `npm install` in your terminal
-5) Run `npm start` to run the Angular frontend
-6) Run `npm run start:server` to run the backend Node server
-7) Open your browser and navigate to `http://localhost:4200/`
+To build the project run:
 
-## 🧯 Troubleshooting
+```bash
+ng build
+```
 
-If you see `error:03000086:digital envelope routines::initialization error` with Node 17+, use the npm scripts in this repo (they apply the legacy OpenSSL flag). If you run `ng` directly, set `NODE_OPTIONS=--openssl-legacy-provider`.
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-If you see `Could not find @angular/cli version 'latest'`, avoid installing the CLI globally. Run `npm install` (with dev dependencies) and use the repo scripts like `npm start`. If you still need to install the CLI manually, use the pinned version from `package.json` (example: `npm install -D @angular/cli@~8.2.2`).
+## Running unit tests
 
-## 🔐 Environment variables
+To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
 
-Set these before starting the backend server:
+```bash
+ng test
+```
 
-- `MONGODB_URI` (defaults to `mongodb://127.0.0.1:27017/pharmacy`)
-- `JWT_SECRET` (replace the default `change-me` value)
-- `SMTP_USER` and `SMTP_PASS` (required for email notifications)
-- Optional: `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_FROM`
+## Running end-to-end tests
 
-Example:
+For end-to-end (e2e) testing, run:
 
-- `export MONGODB_URI="mongodb://127.0.0.1:27017/pharmacy"`
-- `export JWT_SECRET="replace-with-a-long-random-string"`
-- `export SMTP_USER="you@example.com"`
-- `export SMTP_PASS="app-password"`
+```bash
+ng e2e
+```
 
-## 🚨 Development server
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
-Run `npm start` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-Run `npm run start:server` for a backend server. Navigate to `http://localhost:3000/`. 
+## Additional Resources
 
-## 🚨 Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## 🚨 Build
-
-Run `npm run build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## 🚨 Running unit tests
-
-Run `npm test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## 🚨 Running end-to-end tests
-
-Run `npm run e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
