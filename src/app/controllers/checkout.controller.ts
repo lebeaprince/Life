@@ -1,11 +1,17 @@
 import { Injectable } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { CartService } from '../core/cart.service';
 import { CheckoutService } from '../core/checkout.service';
+import { PAYMENT_OPTIONS, PaymentType } from '../core/models';
 
 @Injectable({ providedIn: 'root' })
 export class CheckoutController {
   readonly items$ = this.cartService.items$;
   readonly totals$ = this.checkoutService.totals$;
+  readonly paymentOptions = PAYMENT_OPTIONS;
+  readonly paymentTypeControl = new FormControl<PaymentType>(PAYMENT_OPTIONS[0].value, {
+    nonNullable: true
+  });
 
   constructor(
     private readonly cartService: CartService,
@@ -24,6 +30,6 @@ export class CheckoutController {
   }
 
   async completeSale(): Promise<void> {
-    await this.checkoutService.completeCheckout();
+    await this.checkoutService.completeCheckout(this.paymentTypeControl.value);
   }
 }

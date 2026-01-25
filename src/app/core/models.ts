@@ -2,6 +2,38 @@ import { Timestamp } from 'firebase/firestore';
 
 export type UserRole = 'owner' | 'manager' | 'cashier';
 
+export type PaymentType = 'cash' | 'voucher' | 'speedpoint';
+
+export interface PaymentOption {
+  value: PaymentType;
+  label: string;
+  description: string;
+}
+
+export const PAYMENT_OPTIONS: PaymentOption[] = [
+  {
+    value: 'cash',
+    label: 'Cash',
+    description: 'Notes and coins collected at the counter.'
+  },
+  {
+    value: 'voucher',
+    label: 'Voucher',
+    description: 'Gift vouchers and store credit.'
+  },
+  {
+    value: 'speedpoint',
+    label: 'Speedpoint',
+    description: 'Debit cards and Apple Pay.'
+  }
+];
+
+export const PAYMENT_TYPE_LABELS: Record<PaymentType, string> = {
+  cash: 'Cash',
+  voucher: 'Voucher',
+  speedpoint: 'Speedpoint'
+};
+
 export interface UserProfile {
   uid: string;
   email: string;
@@ -49,6 +81,7 @@ export interface Order {
   subtotal: number;
   tax: number;
   total: number;
+  paymentType?: PaymentType;
 }
 
 export interface InventoryAdjustment {

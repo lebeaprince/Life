@@ -378,6 +378,30 @@ textarea {
   gap: 0.5rem;
 }
 
+.payment-options {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.payment-option {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface-muted);
+  cursor: pointer;
+}
+
+.payment-option input {
+  margin-top: 0.2rem;
+}
+
+.payment-option-title {
+  font-weight: 600;
+}
+
 .summary-row {
   display: flex;
   justify-content: space-between;

@@ -1,5 +1,6 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component } from '@angular/core';
+import { PAYMENT_TYPE_LABELS, PaymentType } from '../../core/models';
 import { OrderService } from '../../core/order.service';
 
 @Component({
@@ -21,12 +22,14 @@ import { OrderService } from '../../core/order.service';
             <span>Order ID</span>
             <span>Items</span>
             <span>Total</span>
+            <span>Payment</span>
             <span>Status</span>
           </div>
           <div class="table-row" *ngFor="let order of orderService.orders$ | async">
             <span>{{ order.id }}</span>
             <span>{{ order.items.length }}</span>
             <span>{{ order.total | currency }}</span>
+            <span>{{ paymentTypeLabel(order.paymentType) }}</span>
             <span class="badge">{{ order.status | titlecase }}</span>
           </div>
         </div>
@@ -36,4 +39,11 @@ import { OrderService } from '../../core/order.service';
 })
 export class OrdersComponent {
   constructor(readonly orderService: OrderService) {}
+
+  paymentTypeLabel(type?: PaymentType): string {
+    if (!type) {
+      return 'Unknown';
+    }
+    return PAYMENT_TYPE_LABELS[type];
+  }
 }

@@ -12,7 +12,7 @@ import {
 } from '@angular/fire/firestore';
 import { filter, firstValueFrom, map, of, shareReplay, switchMap, take } from 'rxjs';
 import { AuthService } from './auth.service';
-import { CartItem, Order } from './models';
+import { CartItem, Order, PaymentType } from './models';
 import { TenantContextService } from './tenant-context.service';
 
 export interface OrderInput {
@@ -20,6 +20,7 @@ export interface OrderInput {
   subtotal: number;
   tax: number;
   total: number;
+  paymentType: PaymentType;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -54,6 +55,7 @@ export class OrderService {
       subtotal: input.subtotal,
       tax: input.tax,
       total: input.total,
+      paymentType: input.paymentType,
       createdBy: userId,
       status: 'paid',
       createdAt: serverTimestamp()
