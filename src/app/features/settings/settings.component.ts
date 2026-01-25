@@ -98,11 +98,7 @@ import { TenantService } from '../../core/tenant.service';
   `
 })
 export class SettingsComponent {
-  readonly form = this.formBuilder.nonNullable.group({
-    currency: ['', [Validators.required]],
-    taxRate: [0, [Validators.required, Validators.min(0)]],
-    lowStockThreshold: [5, [Validators.required, Validators.min(0)]]
-  });
+  readonly form;
 
   constructor(
     readonly authService: AuthService,
@@ -110,6 +106,12 @@ export class SettingsComponent {
     private readonly settingsService: SettingsService,
     private readonly formBuilder: FormBuilder
   ) {
+    this.form = this.formBuilder.nonNullable.group({
+      currency: ['', [Validators.required]],
+      taxRate: [0, [Validators.required, Validators.min(0)]],
+      lowStockThreshold: [5, [Validators.required, Validators.min(0)]]
+    });
+
     this.settingsService.settings$.pipe(take(1)).subscribe((settings) => {
       this.form.patchValue(settings);
     });

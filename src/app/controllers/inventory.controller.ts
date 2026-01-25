@@ -6,20 +6,24 @@ import { ProductService } from '../core/product.service';
 @Injectable({ providedIn: 'root' })
 export class InventoryController {
   readonly errorMessage = signal<string | null>(null);
-  readonly form = this.formBuilder.nonNullable.group({
-    productId: ['', [Validators.required]],
-    delta: [0, [Validators.required]],
-    reason: ['', [Validators.required, Validators.minLength(2)]]
-  });
+  readonly form;
 
-  readonly products$ = this.productService.products$;
-  readonly adjustments$ = this.inventoryService.adjustments$;
+  readonly products$;
+  readonly adjustments$;
 
   constructor(
     private readonly productService: ProductService,
     private readonly inventoryService: InventoryService,
     private readonly formBuilder: FormBuilder
-  ) {}
+  ) {
+    this.form = this.formBuilder.nonNullable.group({
+      productId: ['', [Validators.required]],
+      delta: [0, [Validators.required]],
+      reason: ['', [Validators.required, Validators.minLength(2)]]
+    });
+    this.products$ = this.productService.products$;
+    this.adjustments$ = this.inventoryService.adjustments$;
+  }
 
   async submit(): Promise<void> {
     if (this.form.invalid) {

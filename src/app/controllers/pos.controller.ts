@@ -9,30 +9,34 @@ import { Product } from '../core/models';
 @Injectable({ providedIn: 'root' })
 export class PosController {
   readonly searchControl = new FormControl('', { nonNullable: true });
-  readonly cartItems$ = this.cartService.items$;
-  readonly cartTotals$ = this.checkoutService.totals$;
 
-  readonly filteredProducts$ = combineLatest([
-    this.productService.products$,
-    this.searchControl.valueChanges.pipe(startWith(''))
-  ]).pipe(
-    map(([products, query]) => {
-      const term = query.trim().toLowerCase();
-      return products.filter((product) => {
-        const matches =
-          !term ||
-          product.name.toLowerCase().includes(term) ||
-          product.sku.toLowerCase().includes(term);
-        return product.active && product.stock > 0 && matches;
-      });
-    })
-  );
+  readonly cartItems$: CartService['items$'];
+  readonly cartTotals$: CheckoutService['totals$'];
+  readonly filteredProducts$;
 
   constructor(
     private readonly cartService: CartService,
     private readonly checkoutService: CheckoutService,
     private readonly productService: ProductService
-  ) {}
+  ) {
+    this.cartItems$ = this.cartService.items$;
+    this.cartTotals$ = this.checkoutService.totals$;
+    this.filteredProducts$ = combineLatest([
+      this.productService.products$,
+      this.searchControl.valueChanges.pipe(startWith(''))
+    ]).pipe(
+      map(([products, query]) => {
+        const term = query.trim().toLowerCase();
+        return products.filter((product) => {
+          const matches =
+            !term ||
+            product.name.toLowerCase().includes(term) ||
+            product.sku.toLowerCase().includes(term);
+          return product.active && product.stock > 0 && matches;
+        });
+      })
+    );
+  }
 
   addItem(product: Product): void {
     this.cartService.addItem(product);

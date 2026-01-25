@@ -67,10 +67,12 @@ import { TenantService } from '../../core/tenant.service';
   `
 })
 export class DashboardComponent {
-  readonly stats$ = this.metricsService.summary$;
+  readonly stats$;
 
   constructor(
     private readonly metricsService: MetricsService,
     readonly tenantService: TenantService
-  ) {}
+  ) {
+    this.stats$ = this.metricsService.summary$;
+  }
 }

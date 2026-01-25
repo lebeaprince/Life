@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
 import { CartService } from '../core/cart.service';
 import { CheckoutService } from '../core/checkout.service';
+import { Observable } from 'rxjs';
+import { CartItem } from '../core/models';
 
 @Injectable({ providedIn: 'root' })
 export class CheckoutController {
-  readonly items$ = this.cartService.items$;
-  readonly totals$ = this.checkoutService.totals$;
+  readonly items$: Observable<CartItem[]>;
+  readonly totals$: Observable<any>;
 
   constructor(
     private readonly cartService: CartService,
     private readonly checkoutService: CheckoutService
-  ) {}
+  ) {
+    this.items$ = this.cartService.items$;
+    this.totals$ = this.checkoutService.totals$;
+  }
 
   removeItem(productId: string): void {
     this.cartService.removeItem(productId);
