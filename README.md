@@ -1,59 +1,77 @@
-# Pos
+# Nimbus POS (Angular + Firebase)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.1.
+Nimbus POS is a multi-tenant SaaS point of sale built with Angular 21 and Firebase.
+It ships with authentication, tenant-aware data storage, and a modular UI for
+catalog, inventory, checkout, and reporting workflows.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- Email and password authentication (Firebase Auth)
+- Multi-tenant Firestore data model
+- Inventory adjustments and order tracking
+- POS cart and checkout flow
+- Firebase Hosting and Storage configuration
 
-```bash
-ng serve
+## Tech stack
+
+- Angular 21 (standalone components)
+- Firebase Auth, Firestore, Storage, Hosting
+- RxJS for realtime streams
+
+## Getting started
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Create a Firebase project at https://console.firebase.google.com.
+3. Enable Email/Password authentication.
+4. Create a Firestore database in production or test mode.
+5. Add a Firebase web app and copy the config into:
+   - `src/environments/environment.ts`
+   - `src/environments/environment.prod.ts`
+6. Update `.firebaserc` with your Firebase project ID.
+7. Start the app:
+   ```bash
+   npm start
+   ```
+
+## Firebase deployment
+
+1. Install the Firebase CLI if you do not have it:
+   ```bash
+   npm install -g firebase-tools
+   ```
+2. Log in and select your project:
+   ```bash
+   firebase login
+   firebase use your-project-id
+   ```
+3. Build and deploy:
+   ```bash
+   npm run build
+   firebase deploy
+   ```
+
+## Firestore data model
+
+```
+users/{uid}
+tenants/{tenantId}
+tenants/{tenantId}/products/{productId}
+tenants/{tenantId}/orders/{orderId}
+tenants/{tenantId}/inventoryAdjustments/{adjustmentId}
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Each user document stores the active tenant and role list. Tenant subcollections
+hold operational data for that workspace.
 
-## Code scaffolding
+## Security rules
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Rules live in:
 
-```bash
-ng generate component component-name
-```
+- `firestore.rules`
+- `storage.rules`
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+These rules enforce per-tenant access based on the user profile document. Review
+and tighten them before production.
