@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { CartService } from '../core/cart.service';
 import { CheckoutService } from '../core/checkout.service';
 import { Observable } from 'rxjs';
@@ -29,6 +30,6 @@ export class CheckoutController {
   }
 
   async completeSale(): Promise<void> {
-    await this.checkoutService.completeCheckout();
+    await this.checkoutService.completeCheckout(this.paymentTypeControl.value);
   }
 }

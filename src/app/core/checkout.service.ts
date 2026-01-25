@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { combineLatest, firstValueFrom, map, take } from 'rxjs';
 import { CartService } from './cart.service';
 import { OrderService } from './order.service';
+import { PaymentType } from './models';
 
 @Injectable({ providedIn: 'root' })
 export class CheckoutService {
@@ -24,7 +25,7 @@ export class CheckoutService {
     );
   }
 
-  async completeCheckout(): Promise<void> {
+  async completeCheckout(paymentType: PaymentType = 'cash'): Promise<void> {
     const [items, totals] = await firstValueFrom(
       combineLatest([this.cartService.items$, this.totals$]).pipe(take(1))
     );

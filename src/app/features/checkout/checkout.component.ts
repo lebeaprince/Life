@@ -1,12 +1,13 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { CheckoutController } from '../../controllers/checkout.controller';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, RouterLink],
+  imports: [CommonModule, CurrencyPipe, ReactiveFormsModule, RouterLink],
   template: `
     <section class="page-grid two-col">
       <div class="card">
@@ -52,6 +53,27 @@ import { CheckoutController } from '../../controllers/checkout.controller';
           <div>
             <h4>Order summary</h4>
             <p class="muted">Payment collected at the counter.</p>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div>
+            <h5>Payment type</h5>
+            <p class="muted">Select the payment option for this sale.</p>
+          </div>
+          <div class="payment-options">
+            <label class="payment-option" *ngFor="let option of controller.paymentOptions">
+              <input
+                type="radio"
+                name="paymentType"
+                [value]="option.value"
+                [formControl]="controller.paymentTypeControl"
+              />
+              <div>
+                <div class="payment-option-title">{{ option.label }}</div>
+                <div class="muted">{{ option.description }}</div>
+              </div>
+            </label>
           </div>
         </div>
 
