@@ -17,7 +17,7 @@ import { AuthService } from '../../core/auth.service';
           <p class="auth-subtitle">Sign in to manage sales, inventory, and orders.</p>
         </div>
 
-        <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+        <form [formGroup]="form()" (ngSubmit)="submit()" class="form-grid">
           <label class="field">
             <span>Email</span>
             <input type="email" formControlName="email" placeholder="you@company.com" />
@@ -44,10 +44,7 @@ import { AuthService } from '../../core/auth.service';
   `
 })
 export class LoginComponent {
-  readonly form = this.formBuilder.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]]
-  });
+  readonly form = signal<any>(null);
 
   readonly errorMessage = signal<string | null>(null);
   readonly isSubmitting = signal(false);
@@ -56,11 +53,17 @@ export class LoginComponent {
     private readonly formBuilder: FormBuilder,
     private readonly authService: AuthService,
     private readonly router: Router
-  ) {}
+  ) {
+    this.form.set(this.formBuilder.nonNullable.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]]
+    }));
+  }
 
   async submit(): Promise<void> {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+    const form = this.form();
+    if (form.invalid) {
+      form.markAllAsTouched();
       return;
     }
 
@@ -68,7 +71,7 @@ export class LoginComponent {
     this.errorMessage.set(null);
 
     try {
-      await this.authService.signIn(this.form.value.email ?? '', this.form.value.password ?? '');
+      await this.authService.signIn(form.value.email ?? '', form.value.password ?? '');
       await this.router.navigate(['/app']);
     } catch (error) {
       console.error(error);

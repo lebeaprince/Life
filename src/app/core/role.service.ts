@@ -11,14 +11,18 @@ export class RoleService {
     { value: 'cashier', label: 'Cashier' }
   ];
 
-  readonly canManageUsers$ = this.authService.profile$.pipe(
-    map((profile) => {
-      if (!profile) {
-        return false;
-      }
-      return profile.roles.includes('owner') || profile.roles.includes('manager');
-    })
-  );
+  readonly canManageUsers$ = this.createCanManageUsers();
 
   constructor(private readonly authService: AuthService) {}
+
+  private createCanManageUsers() {
+    return this.authService.profile$.pipe(
+      map((profile) => {
+        if (!profile) {
+          return false;
+        }
+        return profile.roles.includes('owner') || profile.roles.includes('manager');
+      })
+    );
+  }
 }

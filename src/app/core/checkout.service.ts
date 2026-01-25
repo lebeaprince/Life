@@ -6,22 +6,24 @@ import { PaymentType } from './models';
 
 @Injectable({ providedIn: 'root' })
 export class CheckoutService {
-  readonly totals$ = combineLatest([
-    this.cartService.subtotal$,
-    this.cartService.tax$,
-    this.cartService.total$
-  ]).pipe(
-    map(([subtotal, tax, total]) => ({
-      subtotal,
-      tax,
-      total
-    }))
-  );
+  readonly totals$!: ReturnType<typeof combineLatest>;
 
   constructor(
     private readonly cartService: CartService,
     private readonly orderService: OrderService
-  ) {}
+  ) {
+    this.totals$ = combineLatest([
+      this.cartService.subtotal$,
+      this.cartService.tax$,
+      this.cartService.total$
+    ]).pipe(
+      map(([subtotal, tax, total]) => ({
+        subtotal,
+        tax,
+        total
+      }))
+    );
+  }
 
   async completeCheckout(paymentType: PaymentType = 'cash'): Promise<void> {
     const [items, totals] = await firstValueFrom(
@@ -34,10 +36,9 @@ export class CheckoutService {
 
     await this.orderService.createOrder({
       items,
-      subtotal: totals.subtotal,
-      tax: totals.tax,
-      total: totals.total,
-      paymentType
+      subtotal: totals['subtotal'],
+      tax: totals['tax'],
+      total: totals['total']
     });
 
     this.cartService.clear();
