@@ -1,0 +1,20 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userProfile() {
+      return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isTenantMember(tenantId) {
+      return signedIn() && userProfile().tenantId == tenantId;
+    }
+
+    match /tenants/{tenantId}/{allPaths=**} {
+      allow read, write: if isTenantMember(tenantId);
+    }
+  }
+}

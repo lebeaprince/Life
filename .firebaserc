@@ -1,8 +1,5 @@
 {
   "projects": {
-    "default": "pointofsale-26486",
-    "Dev": "pointofsale-26486"
-  },
-  "targets": {},
-  "etags": {}
+    "default": "your-firebase-project-id"
+  }
 }
