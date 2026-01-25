@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { take } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
+import { SettingsService } from '../../core/settings.service';
 import { TenantService } from '../../core/tenant.service';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   template: `
     <section class="page-grid two-col">
       <div class="card">
@@ -64,11 +67,60 @@ import { TenantService } from '../../core/tenant.service';
         </div>
       </div>
     </section>
+
+    <section class="page-grid">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h4>POS preferences</h4>
+            <p class="muted">Default tax rate, currency, and low stock alerts.</p>
+          </div>
+        </div>
+        <form [formGroup]="form" (ngSubmit)="save()" class="form-grid two-col">
+          <label class="field">
+            <span>Currency</span>
+            <input type="text" formControlName="currency" placeholder="USD" />
+          </label>
+          <label class="field">
+            <span>Default tax rate</span>
+            <input type="number" step="0.01" formControlName="taxRate" />
+          </label>
+          <label class="field">
+            <span>Low stock threshold</span>
+            <input type="number" step="1" formControlName="lowStockThreshold" />
+          </label>
+          <div class="field">
+            <button class="btn btn-primary" type="submit">Save settings</button>
+          </div>
+        </form>
+      </div>
+    </section>
   `
 })
 export class SettingsComponent {
+  readonly form = this.formBuilder.nonNullable.group({
+    currency: ['', [Validators.required]],
+    taxRate: [0, [Validators.required, Validators.min(0)]],
+    lowStockThreshold: [5, [Validators.required, Validators.min(0)]]
+  });
+
   constructor(
     readonly authService: AuthService,
-    readonly tenantService: TenantService
-  ) {}
+    readonly tenantService: TenantService,
+    private readonly settingsService: SettingsService,
+    private readonly formBuilder: FormBuilder
+  ) {
+    this.settingsService.settings$.pipe(take(1)).subscribe((settings) => {
+      this.form.patchValue(settings);
+    });
+  }
+
+  async save(): Promise<void> {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    await this.settingsService.updateSettings(this.form.value);
+  }
 }

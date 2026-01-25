@@ -10,6 +10,7 @@ catalog, inventory, checkout, and reporting workflows.
 - Multi-tenant Firestore data model
 - Inventory adjustments and order tracking
 - POS cart and checkout flow
+- Users and role management
 - Firebase Hosting and Storage configuration
 
 ## Tech stack

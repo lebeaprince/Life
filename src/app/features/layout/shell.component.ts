@@ -68,9 +68,11 @@ export class ShellComponent {
   readonly navItems = [
     { label: 'Dashboard', path: '/app/dashboard', icon: 'DB' },
     { label: 'POS', path: '/app/pos', icon: 'POS' },
+    { label: 'Checkout', path: '/app/checkout', icon: 'CHK' },
     { label: 'Products', path: '/app/products', icon: 'PR' },
     { label: 'Inventory', path: '/app/inventory', icon: 'INV' },
     { label: 'Orders', path: '/app/orders', icon: 'ORD' },
+    { label: 'Users', path: '/app/users', icon: 'USR' },
     { label: 'Settings', path: '/app/settings', icon: 'SET' }
   ];
 

@@ -1,7 +1,7 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ProductService } from '../../core/product.service';
+import { Component } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ProductsController } from '../../controllers/products.controller';
 
 @Component({
   selector: 'app-products',
@@ -25,7 +25,7 @@ import { ProductService } from '../../core/product.service';
             <span>Stock</span>
             <span>Status</span>
           </div>
-          <div class="table-row" *ngFor="let product of productService.products$ | async">
+          <div class="table-row" *ngFor="let product of controller.products$ | async">
             <span>{{ product.name }}</span>
             <span>{{ product.sku }}</span>
             <span>{{ product.price | currency }}</span>
@@ -33,7 +33,7 @@ import { ProductService } from '../../core/product.service';
             <button
               class="btn btn-ghost"
               type="button"
-              (click)="toggleActive(product.id, product.active)"
+              (click)="controller.toggleActive(product.id, product.active)"
             >
               {{ product.active ? 'Active' : 'Inactive' }}
             </button>
@@ -49,7 +49,7 @@ import { ProductService } from '../../core/product.service';
           </div>
         </div>
 
-        <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+        <form [formGroup]="controller.form" (ngSubmit)="controller.submit()" class="form-grid">
           <label class="field">
             <span>Name</span>
             <input type="text" formControlName="name" placeholder="Espresso Blend" />
@@ -80,7 +80,9 @@ import { ProductService } from '../../core/product.service';
             <input type="number" formControlName="taxRate" min="0" max="1" step="0.01" />
           </label>
 
-          <p class="form-error" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+          <p class="form-error" *ngIf="controller.errorMessage()">
+            {{ controller.errorMessage() }}
+          </p>
           <button class="btn btn-primary" type="submit">Add product</button>
         </form>
       </div>
@@ -88,46 +90,5 @@ import { ProductService } from '../../core/product.service';
   `
 })
 export class ProductsComponent {
-  readonly form = this.formBuilder.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
-    sku: ['', [Validators.required, Validators.minLength(2)]],
-    price: [0, [Validators.required, Validators.min(0)]],
-    cost: [0, [Validators.required, Validators.min(0)]],
-    stock: [0, [Validators.required, Validators.min(0)]],
-    taxRate: [0.08, [Validators.required, Validators.min(0)]]
-  });
-
-  readonly errorMessage = signal<string | null>(null);
-
-  constructor(
-    readonly productService: ProductService,
-    private readonly formBuilder: FormBuilder
-  ) {}
-
-  async submit(): Promise<void> {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    try {
-      this.errorMessage.set(null);
-      await this.productService.addProduct({
-        name: this.form.value.name ?? '',
-        sku: this.form.value.sku ?? '',
-        price: this.form.value.price ?? 0,
-        cost: this.form.value.cost ?? 0,
-        stock: this.form.value.stock ?? 0,
-        taxRate: this.form.value.taxRate ?? 0
-      });
-      this.form.reset({ price: 0, cost: 0, stock: 0, taxRate: 0.08 });
-    } catch (error) {
-      console.error(error);
-      this.errorMessage.set('Unable to save product. Please try again.');
-    }
-  }
-
-  async toggleActive(productId: string, isActive: boolean): Promise<void> {
-    await this.productService.updateProduct(productId, { active: !isActive });
-  }
+  constructor(readonly controller: ProductsController) {}
 }
