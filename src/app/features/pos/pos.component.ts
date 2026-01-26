@@ -77,20 +77,20 @@ import { PosController } from '../../controllers/pos.controller';
         <div class="cart-summary" *ngIf="controller.cartTotals$ | async as totals">
           <div class="summary-row">
             <span>Subtotal</span>
-            <span>{{ totals.subtotal | currency }}</span>
+            <span>{{ totals['subtotal'] | currency }}</span>
           </div>
           <div class="summary-row">
             <span>Tax</span>
-            <span>{{ totals.tax | currency }}</span>
+            <span>{{ totals['tax'] | currency }}</span>
           </div>
           <div class="summary-row total">
             <span>Total</span>
-            <span>{{ totals.total | currency }}</span>
+            <span>{{ totals['total'] | currency }}</span>
           </div>
           <button
             class="btn btn-primary"
             (click)="controller.checkout()"
-            [disabled]="totals.total <= 0"
+            [disabled]="totals['total'] <= 0"
           >
             Complete sale
           </button>

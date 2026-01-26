@@ -3,14 +3,14 @@ import { FormControl } from '@angular/forms';
 import { CartService } from '../core/cart.service';
 import { CheckoutService } from '../core/checkout.service';
 import { Observable } from 'rxjs';
-import { CartItem, PaymentType, PAYMENT_OPTIONS } from '../core/models';
+import { CartItem, PaymentType } from '../core/models';
 
 @Injectable({ providedIn: 'root' })
 export class CheckoutController {
   readonly items$: Observable<CartItem[]>;
   readonly totals$: Observable<any>;
-  readonly paymentOptions = PAYMENT_OPTIONS;
-  readonly paymentTypeControl = new FormControl<PaymentType>('cash', { nonNullable: true });
+  paymentTypeControl = new FormControl('');
+  paymentOptions: any;
 
   constructor(
     private readonly cartService: CartService,
@@ -18,6 +18,7 @@ export class CheckoutController {
   ) {
     this.items$ = this.cartService.items$;
     this.totals$ = this.checkoutService.totals$;
+    this.paymentOptions = this.checkoutService.paymentOptions$;
   }
 
   removeItem(productId: string): void {
@@ -32,6 +33,6 @@ export class CheckoutController {
   }
 
   async completeSale(): Promise<void> {
-    await this.checkoutService.completeCheckout(this.paymentTypeControl.value);
+    await this.checkoutService.completeCheckout(this.paymentTypeControl.value as PaymentType ?? undefined);
   }
 }

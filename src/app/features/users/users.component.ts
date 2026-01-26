@@ -36,8 +36,8 @@ import { UserProfile, UserRole } from '../../core/models';
                 [disabled]="!(roleService.canManageUsers$ | async)"
                 (change)="onRoleChange(user, $any($event.target).value)"
               >
-                <option *ngFor="let role of controller.roles" [value]="role.value">
-                  {{ role.label }}
+                <option *ngFor="let role of controller.roles" [value]="role">
+                  {{ role }}
                 </option>
               </select>
             </div>

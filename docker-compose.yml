@@ -38,4 +38,4 @@ services:
     ports:
       - "8084:8084"
     environment:
-      - JWT_SECRET=local-dev-secret-change-this-please-32chars
+      - JWT_SECRET=KheMny@n3leL3b0n@

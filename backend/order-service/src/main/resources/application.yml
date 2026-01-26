@@ -2,10 +2,10 @@ server:
   port: 8083
 
 jwt:
-  secret: ${JWT_SECRET:local-dev-secret-change-this-please-32chars}
+  secret: oderserviseserc3t1@
 
 catalog:
-  base-url: ${CATALOG_SERVICE_URL:http://localhost:8082}
+  base-url: http://localhost:8082
 
 spring:
   jackson:

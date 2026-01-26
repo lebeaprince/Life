@@ -62,16 +62,16 @@ import { CheckoutController } from '../../controllers/checkout.controller';
             <p class="muted">Select the payment option for this sale.</p>
           </div>
           <div class="payment-options">
-            <label class="payment-option" *ngFor="let option of controller.paymentOptions">
+            <label class="payment-option" *ngFor="let option of (controller.paymentOptions | async)">
               <input
                 type="radio"
                 name="paymentType"
-                [value]="option.value"
+                [value]="option"
                 [formControl]="controller.paymentTypeControl"
               />
               <div>
-                <div class="payment-option-title">{{ option.label }}</div>
-                <div class="muted">{{ option.description }}</div>
+                <div class="payment-option-title">{{ option }}</div>
+                <div class="muted">{{ option }}</div>
               </div>
             </label>
           </div>

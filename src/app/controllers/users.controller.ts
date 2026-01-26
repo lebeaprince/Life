@@ -7,7 +7,7 @@ import { UserProfile, UserRole } from '../core/models';
 @Injectable({ providedIn: 'root' })
 export class UsersController {
   readonly users$: Observable<UserProfile[]>;
-  readonly roles = this.roleService.roles;
+  readonly roles : any;
   readonly errorMessage = signal<string | null>(null);
 
   constructor(
@@ -15,6 +15,7 @@ export class UsersController {
     private readonly roleService: RoleService
   ) {
     this.users$ = this.userService.users$;
+    this.roles = this.roleService.roles;    
   }
 
   async updateRoles(userId: string, roles: UserRole[]): Promise<void> {

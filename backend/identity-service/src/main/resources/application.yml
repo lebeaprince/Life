@@ -2,8 +2,7 @@ server:
   port: 8081
 
 jwt:
-  secret: ${JWT_SECRET:local-dev-secret-change-this-please-32chars}
-
+  secret: identity5ecr3t31@
 spring:
   jackson:
     serialization:

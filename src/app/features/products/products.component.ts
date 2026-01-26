@@ -25,7 +25,7 @@ import { ProductsController } from '../../controllers/products.controller';
             <span>Stock</span>
             <span>Status</span>
           </div>
-          <div class="table-row" *ngFor="let product of controller.products$ | async">
+          <div class="table-row" *ngFor="let product of controller.products$()">
             <span>{{ product.name }}</span>
             <span>{{ product.sku }}</span>
             <span>{{ product.price | currency }}</span>
@@ -49,7 +49,7 @@ import { ProductsController } from '../../controllers/products.controller';
           </div>
         </div>
 
-        <form [formGroup]="controller.form" (ngSubmit)="controller.submit()" class="form-grid">
+        <form [formGroup]="controller.form()" (ngSubmit)="controller.submit()" class="form-grid">
           <label class="field">
             <span>Name</span>
             <input type="text" formControlName="name" placeholder="Espresso Blend" />

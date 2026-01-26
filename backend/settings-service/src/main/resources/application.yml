@@ -2,7 +2,7 @@ server:
   port: 8084
 
 jwt:
-  secret: ${JWT_SECRET:local-dev-secret-change-this-please-32chars}
+  secret: settings5ecr3tk3y
 
 spring:
   jackson:

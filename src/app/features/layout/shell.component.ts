@@ -35,7 +35,7 @@ import { TenantService } from '../../core/tenant.service';
 
         <div class="sidebar-footer">
           <div class="user-meta" *ngIf="authService.profile$ | async as profile">
-            <div class="avatar">{{ profile.displayName?.[0] ?? 'U' }}</div>
+            <div class="avatar">{{ profile.displayName[0] }}</div>
             <div>
               <div class="user-name">{{ profile.displayName }}</div>
               <div class="user-email">{{ profile.email }}</div>
