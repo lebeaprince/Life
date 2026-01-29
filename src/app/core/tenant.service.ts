@@ -1,22 +1,21 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, doc, docData } from '@angular/fire/firestore';
-import { map, of, shareReplay, switchMap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { of, shareReplay, switchMap } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
 import { Tenant } from './models';
-import { TenantContextService } from './tenant-context.service';
 
 @Injectable({ providedIn: 'root' })
 export class TenantService {
-  private readonly firestore = inject(Firestore);
-  private readonly tenantContext = inject(TenantContextService);
+  private readonly http = inject(HttpClient);
+  private readonly authService = inject(AuthService);
 
-  readonly tenant$ = this.tenantContext.tenantId$.pipe(
-    switchMap((tenantId) => {
-      if (!tenantId) {
+  readonly tenant$ = this.authService.profile$.pipe(
+    switchMap((profile) => {
+      if (!profile) {
         return of(null);
       }
-
-      const tenantRef = doc(this.firestore, `tenants/${tenantId}`);
-      return docData(tenantRef, { idField: 'id' }).pipe(map((data) => data as Tenant));
+      return this.http.get<Tenant>(`${environment.apiBaseUrl}/tenants/me`);
     }),
     shareReplay({ bufferSize: 1, refCount: true })
   );

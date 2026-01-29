@@ -3,12 +3,14 @@ import { FormControl } from '@angular/forms';
 import { CartService } from '../core/cart.service';
 import { CheckoutService } from '../core/checkout.service';
 import { Observable } from 'rxjs';
-import { CartItem } from '../core/models';
+import { CartItem, PaymentType, PAYMENT_OPTIONS } from '../core/models';
 
 @Injectable({ providedIn: 'root' })
 export class CheckoutController {
   readonly items$: Observable<CartItem[]>;
   readonly totals$: Observable<any>;
+  readonly paymentOptions = PAYMENT_OPTIONS;
+  readonly paymentTypeControl = new FormControl<PaymentType>('cash', { nonNullable: true });
 
   constructor(
     private readonly cartService: CartService,

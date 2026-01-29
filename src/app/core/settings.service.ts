@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, doc, docData, setDoc } from '@angular/fire/firestore';
-import { map, of, shareReplay, switchMap } from 'rxjs';
-import { TenantContextService } from './tenant-context.service';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom, of, shareReplay, switchMap } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
 
 export interface TenantSettings {
   currency: string;
@@ -17,29 +18,20 @@ const defaultSettings: TenantSettings = {
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
-  private readonly firestore = inject(Firestore);
-  private readonly tenantContext = inject(TenantContextService);
+  private readonly http = inject(HttpClient);
+  private readonly authService = inject(AuthService);
 
-  readonly settings$ = this.tenantContext.tenantId$.pipe(
-    switchMap((tenantId) => {
-      if (!tenantId) {
+  readonly settings$ = this.authService.profile$.pipe(
+    switchMap((profile) => {
+      if (!profile) {
         return of(defaultSettings);
       }
-
-      const settingsRef = doc(this.firestore, `tenants/${tenantId}/settings/general`);
-      return docData(settingsRef).pipe(
-        map((data) => ({
-          ...defaultSettings,
-          ...((data ?? {}) as Partial<TenantSettings>)
-        }))
-      );
+      return this.http.get<TenantSettings>(`${environment.apiBaseUrl}/settings`);
     }),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
   async updateSettings(changes: Partial<TenantSettings>): Promise<void> {
-    const tenantId = await this.tenantContext.requireTenantId();
-    const settingsRef = doc(this.firestore, `tenants/${tenantId}/settings/general`);
-    await setDoc(settingsRef, changes, { merge: true });
+    await firstValueFrom(this.http.put(`${environment.apiBaseUrl}/settings`, changes));
   }
 }

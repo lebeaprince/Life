@@ -38,7 +38,8 @@ export class CheckoutService {
       items,
       subtotal: totals['subtotal'],
       tax: totals['tax'],
-      total: totals['total']
+      total: totals['total'],
+      paymentType
     });
 
     this.cartService.clear();

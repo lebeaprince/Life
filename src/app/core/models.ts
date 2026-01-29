@@ -1,4 +1,4 @@
-import { Timestamp } from 'firebase/firestore';
+export type ApiTimestamp = string | null;
 
 export type UserRole = 'owner' | 'manager' | 'cashier';
 
@@ -40,7 +40,7 @@ export interface UserProfile {
   displayName: string;
   tenantId: string;
   roles: UserRole[];
-  createdAt: Timestamp | null;
+  createdAt: ApiTimestamp;
 }
 
 export interface Tenant {
@@ -48,7 +48,7 @@ export interface Tenant {
   name: string;
   plan: 'starter' | 'growth' | 'enterprise';
   ownerUid: string;
-  createdAt: Timestamp | null;
+  createdAt: ApiTimestamp;
 }
 
 export interface Product {
@@ -60,8 +60,8 @@ export interface Product {
   stock: number;
   taxRate: number;
   active: boolean;
-  createdAt: Timestamp | null;
-  updatedAt?: Timestamp | null;
+  createdAt: ApiTimestamp;
+  updatedAt?: ApiTimestamp;
 }
 
 export interface CartItem {
@@ -74,7 +74,7 @@ export interface CartItem {
 
 export interface Order {
   id: string;
-  createdAt: Timestamp | null;
+  createdAt: ApiTimestamp;
   createdBy: string;
   status: 'paid' | 'void' | 'open';
   items: CartItem[];
@@ -89,6 +89,6 @@ export interface InventoryAdjustment {
   productId: string;
   delta: number;
   reason: string;
-  createdAt: Timestamp | null;
+  createdAt: ApiTimestamp;
   createdBy: string;
 }
