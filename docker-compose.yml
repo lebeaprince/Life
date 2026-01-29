@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  gateway:
+    build: ./backend/gateway-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - identity-service
+      - catalog-service
+      - order-service
+      - settings-service
+
+  identity-service:
+    build: ./backend/identity-service
+    ports:
+      - "8081:8081"
+    environment:
+      - JWT_SECRET=local-dev-secret-change-this-please-32chars
+
+  catalog-service:
+    build: ./backend/catalog-service
+    ports:
+      - "8082:8082"
+    environment:
+      - JWT_SECRET=local-dev-secret-change-this-please-32chars
+
+  order-service:
+    build: ./backend/order-service
+    ports:
+      - "8083:8083"
+    environment:
+      - JWT_SECRET=local-dev-secret-change-this-please-32chars
+      - CATALOG_SERVICE_URL=http://catalog-service:8082
+
+  settings-service:
+    build: ./backend/settings-service
+    ports:
+      - "8084:8084"
+    environment:
+      - JWT_SECRET=local-dev-secret-change-this-please-32chars
