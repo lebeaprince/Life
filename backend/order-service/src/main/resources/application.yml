@@ -1,0 +1,13 @@
+server:
+  port: 8083
+
+jwt:
+  secret: ${JWT_SECRET:local-dev-secret-change-this-please-32chars}
+
+catalog:
+  base-url: ${CATALOG_SERVICE_URL:http://localhost:8082}
+
+spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false

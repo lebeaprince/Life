@@ -1,14 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth, authState } from '@angular/fire/auth';
-import { Firestore, collection, doc, docData, serverTimestamp, setDoc } from '@angular/fire/firestore';
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  updateProfile
-} from 'firebase/auth';
-import { map, of, shareReplay, switchMap } from 'rxjs';
-import { UserProfile, UserRole } from './models';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { UserProfile } from './models';
 
 export interface SignUpPayload {
   email: string;
@@ -19,63 +13,63 @@ export interface SignUpPayload {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly auth = inject(Auth);
-  private readonly firestore = inject(Firestore);
+  private readonly http = inject(HttpClient);
+  private readonly profileSubject = new BehaviorSubject<UserProfile | null>(null);
 
-  readonly user$ = authState(this.auth);
-  readonly profile$ = this.user$.pipe(
-    switchMap((user) => {
-      if (!user) {
-        return of(null);
-      }
+  readonly profile$ = this.profileSubject.asObservable();
 
-      const userRef = doc(this.firestore, `users/${user.uid}`);
-      return docData(userRef).pipe(
-        map((data) => {
-          if (!data) {
-            return null;
-          }
-          return {
-            ...(data as Omit<UserProfile, 'uid'>),
-            uid: user.uid
-          };
-        })
-      );
-    }),
-    shareReplay({ bufferSize: 1, refCount: true })
-  );
+  constructor() {
+    this.restoreSession();
+  }
 
   async signIn(email: string, password: string): Promise<void> {
-    await signInWithEmailAndPassword(this.auth, email, password);
+    const response = await firstValueFrom(
+      this.http.post<AuthResponse>(`${environment.apiBaseUrl}/auth/login`, {
+        email,
+        password
+      })
+    );
+    this.persistSession(response);
   }
 
   async signUp(payload: SignUpPayload): Promise<void> {
-    const { email, password, displayName, tenantName } = payload;
-    const credential = await createUserWithEmailAndPassword(this.auth, email, password);
-
-    await updateProfile(credential.user, { displayName });
-
-    const tenantRef = doc(collection(this.firestore, 'tenants'));
-    const userRef = doc(this.firestore, `users/${credential.user.uid}`);
-    const roles: UserRole[] = ['owner'];
-
-    await setDoc(tenantRef, {
-      name: tenantName,
-      plan: 'starter',
-      ownerUid: credential.user.uid,
-      createdAt: serverTimestamp()
-    });
-
-    await setDoc(userRef, {
-      email,
-      displayName,
-      tenantId: tenantRef.id,
-      roles,
-      createdAt: serverTimestamp()
-    });
+    const response = await firstValueFrom(
+      this.http.post<AuthResponse>(`${environment.apiBaseUrl}/auth/register`, payload)
+    );
+    this.persistSession(response);
   }
 
   async signOut(): Promise<void> {
-    await signOut(this.auth);
+    this.clearSession();
   }
+
+  getToken(): string | null {
+    return localStorage.getItem('nimbus_token');
+  }
+
+  private restoreSession(): void {
+    const token = this.getToken();
+    if (!token) {
+      return;
+    }
+    this.http.get<UserProfile>(`${environment.apiBaseUrl}/auth/me`).subscribe({
+      next: (profile) => this.profileSubject.next(profile),
+      error: () => this.clearSession()
+    });
+  }
+
+  private persistSession(response: AuthResponse): void {
+    localStorage.setItem('nimbus_token', response.token);
+    this.profileSubject.next(response.profile);
+  }
+
+  private clearSession(): void {
+    localStorage.removeItem('nimbus_token');
+    this.profileSubject.next(null);
+  }
+}
+
+interface AuthResponse {
+  token: string;
+  profile: UserProfile;
 }

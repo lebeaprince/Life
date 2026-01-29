@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: identity-service
+          uri: http://identity-service:8081
+          predicates:
+            - Path=/api/auth/**,/api/users/**,/api/tenants/**
+        - id: catalog-service
+          uri: http://catalog-service:8082
+          predicates:
+            - Path=/api/products/**,/api/inventory/**
+        - id: order-service
+          uri: http://order-service:8083
+          predicates:
+            - Path=/api/orders/**
+        - id: settings-service
+          uri: http://settings-service:8084
+          predicates:
+            - Path=/api/settings/**
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"

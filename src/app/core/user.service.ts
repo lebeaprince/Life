@@ -1,44 +1,34 @@
 import { Injectable, inject } from '@angular/core';
-import {
-  Firestore,
-  collection,
-  collectionData,
-  doc,
-  query,
-  updateDoc,
-  where
-} from '@angular/fire/firestore';
-import { map, of, shareReplay, switchMap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom, of, shareReplay, switchMap } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { UserProfile, UserRole } from './models';
-import { TenantContextService } from './tenant-context.service';
+import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private readonly firestore = inject(Firestore);
-  private readonly tenantContext = inject(TenantContextService);
+  private readonly http = inject(HttpClient);
+  private readonly authService = inject(AuthService);
 
-  readonly users$ = this.tenantContext.tenantId$.pipe(
-    switchMap((tenantId) => {
-      if (!tenantId) {
+  readonly users$ = this.authService.profile$.pipe(
+    switchMap((profile) => {
+      if (!profile) {
         return of([] as UserProfile[]);
       }
-
-      const usersRef = collection(this.firestore, 'users');
-      const usersQuery = query(usersRef, where('tenantId', '==', tenantId));
-      return collectionData(usersQuery, { idField: 'uid' }).pipe(
-        map((data) => data as UserProfile[])
-      );
+      return this.http.get<UserProfile[]>(`${environment.apiBaseUrl}/users`);
     }),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
   async updateRoles(userId: string, roles: UserRole[]): Promise<void> {
-    const userRef = doc(this.firestore, `users/${userId}`);
-    await updateDoc(userRef, { roles });
+    await firstValueFrom(
+      this.http.patch(`${environment.apiBaseUrl}/users/${userId}/roles`, { roles })
+    );
   }
 
   async updateDisplayName(userId: string, displayName: string): Promise<void> {
-    const userRef = doc(this.firestore, `users/${userId}`);
-    await updateDoc(userRef, { displayName });
+    await firstValueFrom(
+      this.http.patch(`${environment.apiBaseUrl}/users/${userId}/display-name`, { displayName })
+    );
   }
 }
