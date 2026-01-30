@@ -14,9 +14,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math3.analysis.function.Identity;
-
-Identity
+@Entity
 @Table(
     name = "order_orders",
     indexes = {
