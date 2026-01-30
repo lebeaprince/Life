@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, firstValueFrom, map, take, Observable } from 'rxjs';
+import { combineLatest, firstValueFrom, map, Observable, of, take } from 'rxjs';
 import { CartService } from './cart.service';
 import { OrderService } from './order.service';
-import { PaymentType } from './models';
+import { PaymentOption, PAYMENT_OPTIONS, PaymentType } from './models';
 
 @Injectable({ providedIn: 'root' })
 export class CheckoutService {
   readonly totals$!: ReturnType<typeof combineLatest>;
-  paymentOptions$!: Observable<PaymentType[]>;;
+  readonly paymentOptions$: Observable<PaymentOption[]> = of(PAYMENT_OPTIONS);
 
   constructor(
     private readonly cartService: CartService,
@@ -40,7 +40,7 @@ export class CheckoutService {
       subtotal: totals['subtotal'],
       tax: totals['tax'],
       total: totals['total'],
-      paymentType: 'cash'
+      paymentType
     });
 
     this.cartService.clear();
