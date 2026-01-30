@@ -1,10 +1,23 @@
 package com.nimbus.order.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public class OrderItem {
+  @Column(name = "product_id", nullable = false)
   private String productId;
+
+  @Column(name = "name", nullable = false)
   private String name;
+
+  @Column(name = "price")
   private double price;
+
+  @Column(name = "tax_rate")
   private double taxRate;
+
+  @Column(name = "quantity")
   private int quantity;
 
   public String getProductId() {

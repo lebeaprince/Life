@@ -1,10 +1,31 @@
 package com.nimbus.catalog.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.Instant;
 
+@Entity
+@Table(
+    name = "catalog_products",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_catalog_products_tenant_sku", columnNames = {"tenant_id", "sku"})
+    },
+    indexes = {
+        @Index(name = "idx_catalog_products_tenant", columnList = "tenant_id")
+    }
+)
 public class Product {
-  private final String id;
-  private final String tenantId;
+  @Id
+  @Column(name = "id", nullable = false, updatable = false)
+  private String id;
+
+  @Column(name = "tenant_id", nullable = false)
+  private String tenantId;
+
   private String name;
   private String sku;
   private double price;
@@ -14,6 +35,8 @@ public class Product {
   private boolean active;
   private Instant createdAt;
   private Instant updatedAt;
+
+  protected Product() {}
 
   public Product(String id, String tenantId) {
     this.id = id;

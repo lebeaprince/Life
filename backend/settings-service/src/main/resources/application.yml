@@ -5,6 +5,18 @@ jwt:
   secret: settings5ecr3tk3y
 
 spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:nimbus}
+    username: ${DB_USER:nimbus}
+    password: ${DB_PASSWORD:nimbus}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
   jackson:
     serialization:
       write-dates-as-timestamps: false
