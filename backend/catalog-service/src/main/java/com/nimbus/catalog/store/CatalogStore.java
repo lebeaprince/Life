@@ -2,32 +2,35 @@ package com.nimbus.catalog.store;
 
 import com.nimbus.catalog.model.InventoryAdjustment;
 import com.nimbus.catalog.model.Product;
+import com.nimbus.catalog.repository.InventoryAdjustmentRepository;
+import com.nimbus.catalog.repository.ProductRepository;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class CatalogStore {
-  private final Map<String, Product> products = new ConcurrentHashMap<>();
-  private final List<InventoryAdjustment> adjustments = new CopyOnWriteArrayList<>();
+  private final ProductRepository productRepository;
+  private final InventoryAdjustmentRepository adjustmentRepository;
 
-  public List<Product> listProducts(String tenantId) {
-    List<Product> result = new ArrayList<>();
-    for (Product product : products.values()) {
-      if (tenantId.equals(product.getTenantId())) {
-        result.add(product);
-      }
-    }
-    result.sort(Comparator.comparing(Product::getName, String.CASE_INSENSITIVE_ORDER));
-    return result;
+  public CatalogStore(
+      ProductRepository productRepository,
+      InventoryAdjustmentRepository adjustmentRepository
+  ) {
+    this.productRepository = productRepository;
+    this.adjustmentRepository = adjustmentRepository;
   }
 
+  public List<Product> listProducts(String tenantId) {
+    List<Product> products = productRepository.findByTenantId(tenantId);
+    products.sort(Comparator.comparing(Product::getName, String.CASE_INSENSITIVE_ORDER));
+    return products;
+  }
+
+  @Transactional
   public Product createProduct(
       String tenantId,
       String name,
@@ -48,10 +51,10 @@ public class CatalogStore {
     product.setActive(true);
     product.setCreatedAt(Instant.now());
     product.setUpdatedAt(product.getCreatedAt());
-    products.put(productId, product);
-    return product;
+    return productRepository.save(product);
   }
 
+  @Transactional
   public Product updateProduct(
       String tenantId,
       String productId,
@@ -86,9 +89,10 @@ public class CatalogStore {
       product.setActive(active);
     }
     product.setUpdatedAt(Instant.now());
-    return product;
+    return productRepository.save(product);
   }
 
+  @Transactional
   public InventoryAdjustment adjustStock(
       String tenantId,
       String userId,
@@ -99,32 +103,22 @@ public class CatalogStore {
     Product product = requireProduct(tenantId, productId);
     product.setStock(product.getStock() + delta);
     product.setUpdatedAt(Instant.now());
+    productRepository.save(product);
 
     InventoryAdjustment adjustment = new InventoryAdjustment(UUID.randomUUID().toString(), tenantId, productId);
     adjustment.setDelta(delta);
     adjustment.setReason(reason);
     adjustment.setCreatedBy(userId);
     adjustment.setCreatedAt(Instant.now());
-    adjustments.add(adjustment);
-    return adjustment;
+    return adjustmentRepository.save(adjustment);
   }
 
   public List<InventoryAdjustment> listAdjustments(String tenantId) {
-    List<InventoryAdjustment> result = new ArrayList<>();
-    for (InventoryAdjustment adjustment : adjustments) {
-      if (tenantId.equals(adjustment.getTenantId())) {
-        result.add(adjustment);
-      }
-    }
-    result.sort(Comparator.comparing(InventoryAdjustment::getCreatedAt).reversed());
-    return result;
+    return adjustmentRepository.findByTenantIdOrderByCreatedAtDesc(tenantId);
   }
 
   private Product requireProduct(String tenantId, String productId) {
-    Product product = products.get(productId);
-    if (product == null || !tenantId.equals(product.getTenantId())) {
-      throw new IllegalArgumentException("Product not found");
-    }
-    return product;
+    return productRepository.findByIdAndTenantId(productId, tenantId)
+        .orElseThrow(() -> new IllegalArgumentException("Product not found"));
   }
 }

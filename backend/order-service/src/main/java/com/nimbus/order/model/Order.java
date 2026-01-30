@@ -1,20 +1,52 @@
 package com.nimbus.order.model;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(
+    name = "order_orders",
+    indexes = {
+        @Index(name = "idx_order_orders_tenant", columnList = "tenant_id")
+    }
+)
 public class Order {
-  private final String id;
-  private final String tenantId;
+  @Id
+  @Column(name = "id", nullable = false, updatable = false)
+  private String id;
+
+  @Column(name = "tenant_id", nullable = false)
+  private String tenantId;
+
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(
+      name = "order_order_items",
+      joinColumns = @JoinColumn(name = "order_id")
+  )
+  @OrderColumn(name = "line_number")
   private List<OrderItem> items = new ArrayList<>();
+
   private double subtotal;
   private double tax;
   private double total;
   private String paymentType;
   private String status;
   private String createdBy;
+  @Column(name = "created_at")
   private Instant createdAt;
+
+  protected Order() {}
 
   public Order(String id, String tenantId) {
     this.id = id;

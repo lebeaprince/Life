@@ -1,13 +1,37 @@
 package com.nimbus.identity.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import java.time.Instant;
 
+@Entity
+@Table(
+    name = "identity_tenants",
+    indexes = {
+        @Index(name = "idx_identity_tenants_owner", columnList = "owner_uid")
+    }
+)
 public class Tenant {
-  private final String id;
+  @Id
+  @Column(name = "id", nullable = false, updatable = false)
+  private String id;
+
+  @Column(name = "name")
   private String name;
+
+  @Column(name = "plan")
   private String plan;
+
+  @Column(name = "owner_uid")
   private String ownerUid;
+
+  @Column(name = "created_at")
   private Instant createdAt;
+
+  protected Tenant() {}
 
   public Tenant(String id) {
     this.id = id;

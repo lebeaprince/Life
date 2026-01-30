@@ -2,32 +2,39 @@ package com.nimbus.identity.store;
 
 import com.nimbus.identity.model.Tenant;
 import com.nimbus.identity.model.User;
+import com.nimbus.identity.repository.TenantRepository;
+import com.nimbus.identity.repository.UserRepository;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class IdentityStore {
-  private final Map<String, User> usersById = new ConcurrentHashMap<>();
-  private final Map<String, String> userIdByEmail = new ConcurrentHashMap<>();
-  private final Map<String, Tenant> tenantsById = new ConcurrentHashMap<>();
+  private final UserRepository userRepository;
+  private final TenantRepository tenantRepository;
   private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-  public synchronized User register(
+  public IdentityStore(UserRepository userRepository, TenantRepository tenantRepository) {
+    this.userRepository = userRepository;
+    this.tenantRepository = tenantRepository;
+  }
+
+  @Transactional
+  public User register(
       String email,
       String password,
       String displayName,
       String tenantName
   ) {
-    if (userIdByEmail.containsKey(email.toLowerCase())) {
+    String normalizedEmail = email.toLowerCase();
+    if (userRepository.existsByEmailIgnoreCase(normalizedEmail)) {
       throw new IllegalArgumentException("Email already exists");
     }
     String tenantId = UUID.randomUUID().toString();
@@ -38,67 +45,61 @@ public class IdentityStore {
     tenant.setPlan("starter");
     tenant.setOwnerUid(userId);
     tenant.setCreatedAt(Instant.now());
-    tenantsById.put(tenantId, tenant);
+    tenantRepository.save(tenant);
 
     User user = new User(userId);
-    user.setEmail(email.toLowerCase());
+    user.setEmail(normalizedEmail);
     user.setPasswordHash(passwordEncoder.encode(password));
     user.setDisplayName(displayName);
     user.setTenantId(tenantId);
     user.setRoles(List.of("owner"));
     user.setCreatedAt(Instant.now());
-    usersById.put(userId, user);
-    userIdByEmail.put(email.toLowerCase(), userId);
-
-    return user;
+    try {
+      return userRepository.save(user);
+    } catch (DataIntegrityViolationException ex) {
+      throw new IllegalArgumentException("Email already exists", ex);
+    }
   }
 
   public Optional<User> authenticate(String email, String password) {
-    String userId = userIdByEmail.get(email.toLowerCase());
-    if (userId == null) {
+    Optional<User> user = userRepository.findByEmailIgnoreCase(email.toLowerCase());
+    if (user.isEmpty()) {
       return Optional.empty();
     }
-    User user = usersById.get(userId);
-    if (user == null || !passwordEncoder.matches(password, user.getPasswordHash())) {
+    User candidate = user.get();
+    if (!passwordEncoder.matches(password, candidate.getPasswordHash())) {
       return Optional.empty();
     }
-    return Optional.of(user);
+    return Optional.of(candidate);
   }
 
   public Optional<User> findUser(String userId) {
-    return Optional.ofNullable(usersById.get(userId));
+    return userRepository.findById(userId);
   }
 
   public List<User> listUsersForTenant(String tenantId) {
-    List<User> users = new ArrayList<>();
-    for (User user : usersById.values()) {
-      if (tenantId.equals(user.getTenantId())) {
-        users.add(user);
-      }
-    }
+    List<User> users = userRepository.findByTenantId(tenantId);
     users.sort(Comparator.comparing(User::getDisplayName, String.CASE_INSENSITIVE_ORDER));
     return users;
   }
 
+  @Transactional
   public User updateRoles(String userId, List<String> roles) {
-    User user = usersById.get(userId);
-    if (user == null) {
-      throw new IllegalArgumentException("User not found");
-    }
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("User not found"));
     user.setRoles(roles);
-    return user;
+    return userRepository.save(user);
   }
 
+  @Transactional
   public User updateDisplayName(String userId, String displayName) {
-    User user = usersById.get(userId);
-    if (user == null) {
-      throw new IllegalArgumentException("User not found");
-    }
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("User not found"));
     user.setDisplayName(displayName);
-    return user;
+    return userRepository.save(user);
   }
 
   public Optional<Tenant> findTenant(String tenantId) {
-    return Optional.ofNullable(tenantsById.get(tenantId));
+    return tenantRepository.findById(tenantId);
   }
 }

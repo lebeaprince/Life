@@ -2,30 +2,26 @@ package com.nimbus.order.store;
 
 import com.nimbus.order.model.Order;
 import com.nimbus.order.model.OrderItem;
+import com.nimbus.order.repository.OrderRepository;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class OrderStore {
-  private final Map<String, Order> orders = new ConcurrentHashMap<>();
+  private final OrderRepository orderRepository;
 
-  public List<Order> listOrders(String tenantId) {
-    List<Order> result = new ArrayList<>();
-    for (Order order : orders.values()) {
-      if (tenantId.equals(order.getTenantId())) {
-        result.add(order);
-      }
-    }
-    result.sort(Comparator.comparing(Order::getCreatedAt).reversed());
-    return result;
+  public OrderStore(OrderRepository orderRepository) {
+    this.orderRepository = orderRepository;
   }
 
+  public List<Order> listOrders(String tenantId) {
+    return orderRepository.findByTenantIdOrderByCreatedAtDesc(tenantId);
+  }
+
+  @Transactional
   public Order createOrder(
       String tenantId,
       String userId,
@@ -45,7 +41,6 @@ public class OrderStore {
     order.setCreatedBy(userId);
     order.setStatus("paid");
     order.setCreatedAt(Instant.now());
-    orders.put(orderId, order);
-    return order;
+    return orderRepository.save(order);
   }
 }

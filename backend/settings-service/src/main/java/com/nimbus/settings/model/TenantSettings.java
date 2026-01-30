@@ -1,10 +1,22 @@
 package com.nimbus.settings.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "settings_tenant_settings")
 public class TenantSettings {
-  private final String tenantId;
+  @Id
+  @Column(name = "tenant_id", nullable = false, updatable = false)
+  private String tenantId;
+
   private String currency;
   private double taxRate;
   private int lowStockThreshold;
+
+  protected TenantSettings() {}
 
   public TenantSettings(String tenantId) {
     this.tenantId = tenantId;

@@ -1,17 +1,58 @@
 package com.nimbus.identity.model;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(
+    name = "identity_users",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_identity_users_email", columnNames = "email")
+    },
+    indexes = {
+        @Index(name = "idx_identity_users_tenant", columnList = "tenant_id")
+    }
+)
 public class User {
-  private final String id;
+  @Id
+  @Column(name = "id", nullable = false, updatable = false)
+  private String id;
+
+  @Column(name = "email", nullable = false)
   private String email;
+
+  @Column(name = "password_hash", nullable = false)
   private String passwordHash;
+
+  @Column(name = "display_name")
   private String displayName;
+
+  @Column(name = "tenant_id", nullable = false)
   private String tenantId;
+
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(
+      name = "identity_user_roles",
+      joinColumns = @JoinColumn(name = "user_id")
+  )
+  @Column(name = "role", nullable = false)
   private List<String> roles = new ArrayList<>();
+
+  @Column(name = "created_at")
   private Instant createdAt;
+
+  protected User() {}
 
   public User(String id) {
     this.id = id;
