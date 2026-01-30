@@ -17,7 +17,7 @@ import { AuthService } from '../../core/auth.service';
           <p class="auth-subtitle">Set up your store and start taking orders in minutes.</p>
         </div>
 
-        <form [formGroup]="form()" (ngSubmit)="submit()" class="form-grid two-col">
+        <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid two-col">
           <label class="field">
             <span>Full name</span>
             <input type="text" formControlName="displayName" placeholder="Alex Rivera" />
@@ -60,7 +60,7 @@ import { AuthService } from '../../core/auth.service';
   `
 })
 export class RegisterComponent {
-  readonly form = signal<FormGroup>(new FormGroup({}));
+  readonly form: FormGroup;
   readonly errorMessage = signal<string | null>(null);
   readonly isSubmitting = signal(false);
 
@@ -69,19 +69,17 @@ export class RegisterComponent {
     private readonly authService: AuthService,
     private readonly router: Router
   ) {
-    this.form.set(
-      this.formBuilder.nonNullable.group({
-        displayName: ['', [Validators.required, Validators.minLength(2)]],
-        tenantName: ['', [Validators.required, Validators.minLength(2)]],
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(8)]],
-        confirmPassword: ['', [Validators.required, Validators.minLength(8)]]
-      })
-    );
+    this.form = this.formBuilder.nonNullable.group({
+      displayName: ['', [Validators.required, Validators.minLength(2)]],
+      tenantName: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', [Validators.required, Validators.minLength(8)]]
+    });
   }
 
   async submit(): Promise<void> {
-    const form = this.form();
+    const form = this.form;
     if (form.invalid) {
       form.markAllAsTouched();
       return;

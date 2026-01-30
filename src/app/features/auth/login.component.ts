@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 
@@ -17,7 +17,7 @@ import { AuthService } from '../../core/auth.service';
           <p class="auth-subtitle">Sign in to manage sales, inventory, and orders.</p>
         </div>
 
-        <form [formGroup]="form()" (ngSubmit)="submit()" class="form-grid">
+        <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
           <label class="field">
             <span>Email</span>
             <input type="email" formControlName="email" placeholder="you@company.com" />
@@ -44,8 +44,7 @@ import { AuthService } from '../../core/auth.service';
   `
 })
 export class LoginComponent {
-  readonly form = signal<any>(null);
-
+  readonly form: FormGroup;
   readonly errorMessage = signal<string | null>(null);
   readonly isSubmitting = signal(false);
 
@@ -54,14 +53,14 @@ export class LoginComponent {
     private readonly authService: AuthService,
     private readonly router: Router
   ) {
-    this.form.set(this.formBuilder.nonNullable.group({
+    this.form = this.formBuilder.nonNullable.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]]
-    }));
+    });
   }
 
   async submit(): Promise<void> {
-    const form = this.form();
+    const form = this.form;
     if (form.invalid) {
       form.markAllAsTouched();
       return;
