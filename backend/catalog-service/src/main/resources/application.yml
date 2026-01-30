@@ -5,9 +5,10 @@ jwt:
   secret: identity5ecr3t31
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:nimbus}
-    username: ${DB_USER:nimbus}
-    password: ${DB_PASSWORD:nimbus}
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: mynewpassword
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,6 +17,7 @@ spring:
       hibernate:
         jdbc:
           time_zone: UTC
+        dialect: org.hibernate.dialect.PostgresqlDialect 
   jackson:
     serialization:
       write-dates-as-timestamps: false
