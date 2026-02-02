@@ -4,11 +4,11 @@ services:
   postgres:
     image: postgres:16-alpine
     ports:
-      - "5432:5432"
+      - "5430:5430"
     environment:
-      - POSTGRES_DB=nimbus
-      - POSTGRES_USER=nimbus
-      - POSTGRES_PASSWORD=nimbus
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mynewpassword
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
@@ -29,12 +29,12 @@ services:
     depends_on:
       - postgres
     environment:
-      - JWT_SECRET=local-dev-secret-change-this-please-32chars
-      - DB_HOST=postgres
+      - JWT_SECRET=identity5ecr3t31@
+      - DB_HOST=localhost
       - DB_PORT=5432
-      - DB_NAME=nimbus
-      - DB_USER=nimbus
-      - DB_PASSWORD=nimbus
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=mynewpassword
 
   catalog-service:
     build: ./backend/catalog-service
@@ -43,12 +43,12 @@ services:
     depends_on:
       - postgres
     environment:
-      - JWT_SECRET=local-dev-secret-change-this-please-32chars
-      - DB_HOST=postgres
+      - JWT_SECRET=identity5ecr3t31
+      - DB_HOST=localhost
       - DB_PORT=5432
-      - DB_NAME=nimbus
-      - DB_USER=nimbus
-      - DB_PASSWORD=nimbus
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=mynewpassword
 
   order-service:
     build: ./backend/order-service
@@ -57,12 +57,12 @@ services:
     depends_on:
       - postgres
     environment:
-      - JWT_SECRET=local-dev-secret-change-this-please-32chars
-      - DB_HOST=postgres
+      - JWT_SECRET=oderserviseserc3t1@
+      - DB_HOST=localhost
       - DB_PORT=5432
-      - DB_NAME=nimbus
-      - DB_USER=nimbus
-      - DB_PASSWORD=nimbus
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=mynewpassword
       - CATALOG_SERVICE_URL=http://catalog-service:8082
 
   settings-service:
@@ -72,12 +72,12 @@ services:
     depends_on:
       - postgres
     environment:
-      - JWT_SECRET=KheMny@n3leL3b0n@
-      - DB_HOST=postgres
+      - JWT_SECRET=settings5ecr3tk3y
+      - DB_HOST=localhost
       - DB_PORT=5432
-      - DB_NAME=nimbus
-      - DB_USER=nimbus
-      - DB_PASSWORD=nimbus
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=mynewpassword
 
 volumes:
   postgres-data:

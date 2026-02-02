@@ -36,6 +36,7 @@ public class AuthController {
   @PostMapping("/register")
   @ResponseStatus(HttpStatus.CREATED)
   public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
+        System.out.println("/register::::::"+request.email());
     try {
       User user = identityStore.register(
           request.email(),
@@ -51,6 +52,7 @@ public class AuthController {
 
   @PostMapping("/login")
   public AuthResponse login(@Valid @RequestBody LoginRequest request) {
+         System.out.println("/login::::::"+request.email());   
     User user = identityStore.authenticate(request.email(), request.password())
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
     return new AuthResponse(jwtService.generateToken(user), toProfile(user));

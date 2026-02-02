@@ -1,6 +1,6 @@
 package com.nimbus.settings.model;
 
-import com.google.common.collect.Tables;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-Tables(name = "settings_tenant_settings")
+@Table(name = "settings_tenant_settings")
 public class TenantSettings {
   @Id
   @Column(name = "tenant_id", nullable = false, updatable = false)

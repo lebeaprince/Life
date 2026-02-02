@@ -62,6 +62,7 @@ public class IdentityStore {
   }
 
   public Optional<User> authenticate(String email, String password) {
+    System.out.println("Store::::::"+email);
     Optional<User> user = userRepository.findByEmailIgnoreCase(email.toLowerCase());
     if (user.isEmpty()) {
       return Optional.empty();
