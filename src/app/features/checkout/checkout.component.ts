@@ -75,9 +75,36 @@ import { CheckoutController } from '../../controllers/checkout.controller';
               </div>
             </label>
           </div>
+
+          <div>
+            <h5>Ready notification</h5>
+            <p class="muted">
+              Optional SMS message when the order is ready for collection.
+            </p>
+          </div>
+          <label class="field">
+            <span>Send SMS to customer</span>
+            <input type="checkbox" [formControl]="controller.notifyCustomerControl" />
+          </label>
+          <div class="form-grid" *ngIf="controller.notifyCustomerControl.value">
+            <label class="field">
+              <span>Customer name</span>
+              <input type="text" [formControl]="controller.customerNameControl" />
+            </label>
+            <label class="field">
+              <span>Cellphone number</span>
+              <input type="tel" [formControl]="controller.customerPhoneControl" />
+            </label>
+            <p class="muted">
+              Phone numbers are encrypted at rest to support POPIA compliance.
+            </p>
+          </div>
         </div>
 
         <div class="cart-summary" *ngIf="controller.totals$ | async as totals">
+          <p class="form-error" *ngIf="controller.errorMessage()">
+            {{ controller.errorMessage() }}
+          </p>
           <div class="summary-row">
             <span>Subtotal</span>
             <span>{{ totals.subtotal | currency }}</span>
