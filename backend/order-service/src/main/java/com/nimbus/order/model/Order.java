@@ -20,7 +20,8 @@ import java.util.List;
 @Table(
     name = "order_orders",
     indexes = {
-        @Index(name = "idx_order_orders_tenant", columnList = "tenant_id")
+        @Index(name = "idx_order_orders_tenant", columnList = "tenant_id"),
+        @Index(name = "idx_order_orders_tenant_phone", columnList = "tenant_id, notification_phone_hash")
     }
 )
 public class Order {
@@ -47,6 +48,16 @@ public class Order {
   private String createdBy;
   @Column(name = "created_at")
   private Instant createdAt;
+  @Column(name = "notification_enabled")
+  private boolean notificationEnabled;
+  @Column(name = "notification_customer_name")
+  private String notificationCustomerName;
+  @Column(name = "notification_phone_hash")
+  private String notificationPhoneHash;
+  @Column(name = "notification_phone_masked")
+  private String notificationPhoneMasked;
+  @Column(name = "notification_phone_encrypted", length = 512)
+  private String notificationPhoneEncrypted;
 
   protected Order() {}
 
@@ -125,5 +136,45 @@ public class Order {
 
   public void setCreatedAt(Instant createdAt) {
     this.createdAt = createdAt;
+  }
+
+  public boolean isNotificationEnabled() {
+    return notificationEnabled;
+  }
+
+  public void setNotificationEnabled(boolean notificationEnabled) {
+    this.notificationEnabled = notificationEnabled;
+  }
+
+  public String getNotificationCustomerName() {
+    return notificationCustomerName;
+  }
+
+  public void setNotificationCustomerName(String notificationCustomerName) {
+    this.notificationCustomerName = notificationCustomerName;
+  }
+
+  public String getNotificationPhoneHash() {
+    return notificationPhoneHash;
+  }
+
+  public void setNotificationPhoneHash(String notificationPhoneHash) {
+    this.notificationPhoneHash = notificationPhoneHash;
+  }
+
+  public String getNotificationPhoneMasked() {
+    return notificationPhoneMasked;
+  }
+
+  public void setNotificationPhoneMasked(String notificationPhoneMasked) {
+    this.notificationPhoneMasked = notificationPhoneMasked;
+  }
+
+  public String getNotificationPhoneEncrypted() {
+    return notificationPhoneEncrypted;
+  }
+
+  public void setNotificationPhoneEncrypted(String notificationPhoneEncrypted) {
+    this.notificationPhoneEncrypted = notificationPhoneEncrypted;
   }
 }
