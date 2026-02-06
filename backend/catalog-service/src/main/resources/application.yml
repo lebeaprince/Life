@@ -7,9 +7,9 @@ spring:
   application:
     name: catalog-service
   datasource:
-    url: jdbc:postgresql://localhost:5430/postgres
-    username: postgres
-    password: mynewpassword
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5430}/${DB_NAME:postgres}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:mynewpassword}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
