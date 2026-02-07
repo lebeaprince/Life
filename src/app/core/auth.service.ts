@@ -23,9 +23,10 @@ export class AuthService {
   }
 
   async signIn(email: string, password: string): Promise<void> {
+    const normalizedEmail = this.normalizeEmail(email);
     const response = await firstValueFrom(
       this.http.post<AuthResponse>(`${environment.apiBaseUrl}/auth/login`, {
-        email,
+        email: normalizedEmail,
         password
       })
     );
@@ -33,8 +34,14 @@ export class AuthService {
   }
 
   async signUp(payload: SignUpPayload): Promise<void> {
+    const normalizedPayload: SignUpPayload = {
+      ...payload,
+      email: this.normalizeEmail(payload.email),
+      displayName: this.normalizeName(payload.displayName),
+      tenantName: this.normalizeName(payload.tenantName)
+    };
     const response = await firstValueFrom(
-      this.http.post<AuthResponse>(`${environment.apiBaseUrl}/auth/register`, payload)
+      this.http.post<AuthResponse>(`${environment.apiBaseUrl}/auth/register`, normalizedPayload)
     );
     this.persistSession(response);
   }
@@ -66,6 +73,14 @@ export class AuthService {
   private clearSession(): void {
     localStorage.removeItem('nimbus_token');
     this.profileSubject.next(null);
+  }
+
+  private normalizeEmail(value: string): string {
+    return value.trim().toLowerCase();
+  }
+
+  private normalizeName(value: string): string {
+    return value.trim();
   }
 }
 

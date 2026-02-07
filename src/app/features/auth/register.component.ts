@@ -3,6 +3,7 @@ import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
+import { getErrorMessage } from '../../core/http-error';
 
 @Component({
   selector: 'app-register',
@@ -103,7 +104,9 @@ export class RegisterComponent {
       await this.router.navigate(['/app']);
     } catch (error) {
       console.error(error);
-      this.errorMessage.set('We could not create your account. Please try again.');
+      this.errorMessage.set(
+        getErrorMessage(error, 'We could not create your account. Please try again.')
+      );
     } finally {
       this.isSubmitting.set(false);
     }
