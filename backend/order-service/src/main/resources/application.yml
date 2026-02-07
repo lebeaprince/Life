@@ -7,6 +7,9 @@ jwt:
 catalog:
   base-url: http://catalog-service
 
+notification:
+  encryption-key: ${ORDER_NOTIFICATION_SECRET:change-me}
+
 spring:
   application:
     name: order-service

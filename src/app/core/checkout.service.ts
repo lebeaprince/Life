@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, firstValueFrom, map, Observable, of, take } from 'rxjs';
 import { CartService } from './cart.service';
-import { OrderService } from './order.service';
+import { OrderNotificationInput, OrderService } from './order.service';
 import { PaymentOption, PAYMENT_OPTIONS, PaymentType } from './models';
 
 @Injectable({ providedIn: 'root' })
@@ -26,7 +26,10 @@ export class CheckoutService {
     );
   }
 
-  async completeCheckout(paymentType: PaymentType = 'cash'): Promise<void> {
+  async completeCheckout(
+    paymentType: PaymentType = 'cash',
+    notification?: OrderNotificationInput | null
+  ): Promise<void> {
     const [items, totals] = await firstValueFrom(
       combineLatest([this.cartService.items$, this.totals$]).pipe(take(1))
     );
@@ -40,7 +43,8 @@ export class CheckoutService {
       subtotal: totals['subtotal'],
       tax: totals['tax'],
       total: totals['total'],
-      paymentType
+      paymentType,
+      notification: notification ?? undefined
     });
 
     this.cartService.clear();

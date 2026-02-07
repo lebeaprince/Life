@@ -76,12 +76,18 @@ export interface Order {
   id: string;
   createdAt: ApiTimestamp;
   createdBy: string;
-  status: 'paid' | 'void' | 'open';
+  status: 'paid' | 'void' | 'open' | 'ready';
   items: CartItem[];
   subtotal: number;
   tax: number;
   total: number;
   paymentType?: PaymentType;
+  notification?: OrderNotification | null;
+}
+
+export interface OrderNotification {
+  customerName: string;
+  phoneMasked: string;
 }
 
 export interface InventoryAdjustment {
