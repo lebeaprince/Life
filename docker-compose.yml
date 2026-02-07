@@ -43,7 +43,7 @@ services:
       - postgres
     environment:
       - EUREKA_SERVER_URL=http://discovery-service:8761/eureka
-      - JWT_SECRET=identity5ecr3t31@
+      - JWT_SECRET=nimbus-dev-jwt-secret-key-32-bytes!!
       - DB_HOST=localhost
       - DB_PORT=5432
       - DB_NAME=postgres
@@ -59,7 +59,7 @@ services:
       - postgres
     environment:
       - EUREKA_SERVER_URL=http://discovery-service:8761/eureka
-      - JWT_SECRET=identity5ecr3t31
+      - JWT_SECRET=nimbus-dev-jwt-secret-key-32-bytes!!
       - DB_HOST=localhost
       - DB_PORT=5432
       - DB_NAME=postgres
@@ -75,7 +75,7 @@ services:
       - postgres
     environment:
       - EUREKA_SERVER_URL=http://discovery-service:8761/eureka
-      - JWT_SECRET=oderserviseserc3t1@
+      - JWT_SECRET=nimbus-dev-jwt-secret-key-32-bytes!!
       - DB_HOST=localhost
       - DB_PORT=5432
       - DB_NAME=postgres
@@ -92,7 +92,7 @@ services:
       - postgres
     environment:
       - EUREKA_SERVER_URL=http://discovery-service:8761/eureka
-      - JWT_SECRET=settings5ecr3tk3y
+      - JWT_SECRET=nimbus-dev-jwt-secret-key-32-bytes!!
       - DB_HOST=localhost
       - DB_PORT=5432
       - DB_NAME=postgres

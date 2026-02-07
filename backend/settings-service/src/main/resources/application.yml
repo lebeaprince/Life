@@ -2,7 +2,7 @@ server:
   port: 8084
 
 jwt:
-  secret: settings5ecr3tk3y
+  secret: nimbus-dev-jwt-secret-key-32-bytes!!
 
 spring:
   application:
