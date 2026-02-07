@@ -8,12 +8,20 @@ export interface TenantSettings {
   currency: string;
   taxRate: number;
   lowStockThreshold: number;
+  loyaltyEnabled: boolean;
+  loyaltyPointsPerOrder: number;
+  loyaltyRewardThreshold: number;
+  orderReadyNotificationsEnabled: boolean;
 }
 
 const defaultSettings: TenantSettings = {
   currency: 'USD',
   taxRate: 0.08,
-  lowStockThreshold: 5
+  lowStockThreshold: 5,
+  loyaltyEnabled: true,
+  loyaltyPointsPerOrder: 10,
+  loyaltyRewardThreshold: 100,
+  orderReadyNotificationsEnabled: true
 };
 
 @Injectable({ providedIn: 'root' })

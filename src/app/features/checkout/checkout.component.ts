@@ -77,6 +77,53 @@ import { CheckoutController } from '../../controllers/checkout.controller';
           </div>
         </div>
 
+        <div class="card-body">
+          <div>
+            <h5>Order ready notifications</h5>
+            <p class="muted">Opt-in to notify the customer and enroll loyalty.</p>
+          </div>
+          <label class="field checkbox">
+            <span>Notify customer when order is ready</span>
+            <input type="checkbox" [formControl]="controller.notifyWhenReadyControl" />
+          </label>
+
+          <div *ngIf="controller.notifyWhenReadyControl.value" class="form-grid two-col">
+            <label class="field">
+              <span>Customer name</span>
+              <input type="text" [formControl]="controller.customerNameControl" />
+            </label>
+            <label class="field">
+              <span>Cellphone number</span>
+              <input type="tel" [formControl]="controller.customerPhoneControl" />
+            </label>
+          </div>
+
+          <div class="detail-list" *ngIf="controller.notifyWhenReadyControl.value">
+            <ng-container *ngIf="controller.loyaltySummary$ | async as summary">
+              <p class="muted" *ngIf="!summary.orderReadyNotificationsEnabled">
+                Ready notifications are disabled in settings.
+              </p>
+              <p class="muted" *ngIf="!summary.loyaltyEnabled">
+                Loyalty program is disabled in settings.
+              </p>
+              <div *ngIf="summary.loyaltyEnabled">
+                <div class="detail-row">
+                  <span>Points balance</span>
+                  <strong>{{ summary.pointsBalance }}</strong>
+                </div>
+                <div class="detail-row">
+                  <span>Points to free order</span>
+                  <strong>{{ summary.pointsToNextReward }}</strong>
+                </div>
+                <label class="field checkbox" *ngIf="summary.rewardAvailable">
+                  <span>Redeem free order</span>
+                  <input type="checkbox" [formControl]="controller.redeemRewardControl" />
+                </label>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
         <div class="cart-summary" *ngIf="controller.totals$ | async as totals">
           <div class="summary-row">
             <span>Subtotal</span>
@@ -86,6 +133,10 @@ import { CheckoutController } from '../../controllers/checkout.controller';
             <span>Tax</span>
             <span>{{ totals.tax | currency }}</span>
           </div>
+          <div class="summary-row" *ngIf="totals.discount > 0">
+            <span>Loyalty reward</span>
+            <span>-{{ totals.discount | currency }}</span>
+          </div>
           <div class="summary-row total">
             <span>Total</span>
             <span>{{ totals.total | currency }}</span>
@@ -93,7 +144,7 @@ import { CheckoutController } from '../../controllers/checkout.controller';
           <button
             class="btn btn-primary"
             (click)="controller.completeSale()"
-            [disabled]="totals.total <= 0"
+            [disabled]="totals.subtotal <= 0"
           >
             Complete sale
           </button>

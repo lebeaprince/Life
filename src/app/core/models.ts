@@ -76,7 +76,7 @@ export interface Order {
   id: string;
   createdAt: ApiTimestamp;
   createdBy: string;
-  status: 'paid' | 'void' | 'open';
+  status: 'paid' | 'void' | 'open' | 'ready';
   items: CartItem[];
   subtotal: number;
   tax: number;

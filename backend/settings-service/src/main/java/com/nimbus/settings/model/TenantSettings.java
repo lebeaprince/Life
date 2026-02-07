@@ -17,6 +17,14 @@ public class TenantSettings {
   private String currency;
   private double taxRate;
   private int lowStockThreshold;
+  @Column(name = "loyalty_enabled")
+  private boolean loyaltyEnabled;
+  @Column(name = "loyalty_points_per_order")
+  private int loyaltyPointsPerOrder;
+  @Column(name = "loyalty_reward_threshold")
+  private int loyaltyRewardThreshold;
+  @Column(name = "order_ready_notifications_enabled")
+  private boolean orderReadyNotificationsEnabled;
 
   protected TenantSettings() {}
 
@@ -50,5 +58,37 @@ public class TenantSettings {
 
   public void setLowStockThreshold(int lowStockThreshold) {
     this.lowStockThreshold = lowStockThreshold;
+  }
+
+  public boolean isLoyaltyEnabled() {
+    return loyaltyEnabled;
+  }
+
+  public void setLoyaltyEnabled(boolean loyaltyEnabled) {
+    this.loyaltyEnabled = loyaltyEnabled;
+  }
+
+  public int getLoyaltyPointsPerOrder() {
+    return loyaltyPointsPerOrder;
+  }
+
+  public void setLoyaltyPointsPerOrder(int loyaltyPointsPerOrder) {
+    this.loyaltyPointsPerOrder = loyaltyPointsPerOrder;
+  }
+
+  public int getLoyaltyRewardThreshold() {
+    return loyaltyRewardThreshold;
+  }
+
+  public void setLoyaltyRewardThreshold(int loyaltyRewardThreshold) {
+    this.loyaltyRewardThreshold = loyaltyRewardThreshold;
+  }
+
+  public boolean isOrderReadyNotificationsEnabled() {
+    return orderReadyNotificationsEnabled;
+  }
+
+  public void setOrderReadyNotificationsEnabled(boolean orderReadyNotificationsEnabled) {
+    this.orderReadyNotificationsEnabled = orderReadyNotificationsEnabled;
   }
 }

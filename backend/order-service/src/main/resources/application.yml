@@ -7,6 +7,13 @@ jwt:
 catalog:
   base-url: http://catalog-service
 
+settings:
+  base-url: http://settings-service
+
+pii:
+  encryption-key: ${PII_ENCRYPTION_KEY:nimbus-dev-pii-secret}
+  hash-pepper: ${PII_HASH_PEPPER:nimbus-dev-pii-pepper}
+
 spring:
   application:
     name: order-service

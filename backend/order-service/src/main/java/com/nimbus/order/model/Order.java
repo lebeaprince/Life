@@ -47,6 +47,26 @@ public class Order {
   private String createdBy;
   @Column(name = "created_at")
   private Instant createdAt;
+  @Column(name = "notify_when_ready")
+  private boolean notifyWhenReady;
+  @Column(name = "customer_name_encrypted", length = 512)
+  private String customerNameEncrypted;
+  @Column(name = "customer_phone_encrypted", length = 512)
+  private String customerPhoneEncrypted;
+  @Column(name = "customer_phone_hash")
+  private String customerPhoneHash;
+  @Column(name = "loyalty_member_id")
+  private String loyaltyMemberId;
+  @Column(name = "loyalty_points_awarded")
+  private int loyaltyPointsAwarded;
+  @Column(name = "loyalty_points_redeemed")
+  private int loyaltyPointsRedeemed;
+  @Column(name = "loyalty_reward_redeemed")
+  private boolean loyaltyRewardRedeemed;
+  @Column(name = "ready_at")
+  private Instant readyAt;
+  @Column(name = "ready_by")
+  private String readyBy;
 
   protected Order() {}
 
@@ -125,5 +145,85 @@ public class Order {
 
   public void setCreatedAt(Instant createdAt) {
     this.createdAt = createdAt;
+  }
+
+  public boolean isNotifyWhenReady() {
+    return notifyWhenReady;
+  }
+
+  public void setNotifyWhenReady(boolean notifyWhenReady) {
+    this.notifyWhenReady = notifyWhenReady;
+  }
+
+  public String getCustomerNameEncrypted() {
+    return customerNameEncrypted;
+  }
+
+  public void setCustomerNameEncrypted(String customerNameEncrypted) {
+    this.customerNameEncrypted = customerNameEncrypted;
+  }
+
+  public String getCustomerPhoneEncrypted() {
+    return customerPhoneEncrypted;
+  }
+
+  public void setCustomerPhoneEncrypted(String customerPhoneEncrypted) {
+    this.customerPhoneEncrypted = customerPhoneEncrypted;
+  }
+
+  public String getCustomerPhoneHash() {
+    return customerPhoneHash;
+  }
+
+  public void setCustomerPhoneHash(String customerPhoneHash) {
+    this.customerPhoneHash = customerPhoneHash;
+  }
+
+  public String getLoyaltyMemberId() {
+    return loyaltyMemberId;
+  }
+
+  public void setLoyaltyMemberId(String loyaltyMemberId) {
+    this.loyaltyMemberId = loyaltyMemberId;
+  }
+
+  public int getLoyaltyPointsAwarded() {
+    return loyaltyPointsAwarded;
+  }
+
+  public void setLoyaltyPointsAwarded(int loyaltyPointsAwarded) {
+    this.loyaltyPointsAwarded = loyaltyPointsAwarded;
+  }
+
+  public int getLoyaltyPointsRedeemed() {
+    return loyaltyPointsRedeemed;
+  }
+
+  public void setLoyaltyPointsRedeemed(int loyaltyPointsRedeemed) {
+    this.loyaltyPointsRedeemed = loyaltyPointsRedeemed;
+  }
+
+  public boolean isLoyaltyRewardRedeemed() {
+    return loyaltyRewardRedeemed;
+  }
+
+  public void setLoyaltyRewardRedeemed(boolean loyaltyRewardRedeemed) {
+    this.loyaltyRewardRedeemed = loyaltyRewardRedeemed;
+  }
+
+  public Instant getReadyAt() {
+    return readyAt;
+  }
+
+  public void setReadyAt(Instant readyAt) {
+    this.readyAt = readyAt;
+  }
+
+  public String getReadyBy() {
+    return readyBy;
+  }
+
+  public void setReadyBy(String readyBy) {
+    this.readyBy = readyBy;
   }
 }
