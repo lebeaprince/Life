@@ -19,11 +19,23 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     });
   }
 
+  const authHeader = req.headers.get('Authorization');
+  const requestToken =
+    authHeader && authHeader.startsWith('Bearer ')
+      ? authHeader.slice('Bearer '.length).trim()
+      : null;
+
   return next(req).pipe(
     catchError((error) => {
       if (error?.status === 401 && !isPublicAuthRequest) {
-        void authService.signOut();
-        void router.navigate(['/login']);
+        const currentToken = authService.getToken();
+        const shouldSignOut =
+          (requestToken && currentToken === requestToken) ||
+          (!requestToken && !currentToken);
+        if (shouldSignOut) {
+          void authService.signOut();
+          void router.navigate(['/login']);
+        }
       }
       return throwError(() => error);
     })

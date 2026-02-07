@@ -61,7 +61,11 @@ export class AuthService {
     }
     this.http.get<UserProfile>(`${environment.apiBaseUrl}/auth/me`).subscribe({
       next: (profile) => this.profileSubject.next(profile),
-      error: () => this.clearSession()
+      error: () => {
+        if (this.getToken() === token) {
+          this.clearSession();
+        }
+      }
     });
   }
 
