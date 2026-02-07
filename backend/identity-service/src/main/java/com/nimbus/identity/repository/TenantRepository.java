@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TenantRepository extends JpaRepository<Tenant, String> {
 
-    void save(Tenant tenant);
+    <S extends Tenant> S save(S tenant);
 
     Optional<Tenant> findById(String tenantId);
 }
