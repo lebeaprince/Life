@@ -7,6 +7,7 @@ import com.nimbus.identity.repository.UserRepository;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -33,7 +34,10 @@ public class IdentityStore {
       String displayName,
       String tenantName
   ) {
-    String normalizedEmail = email.toLowerCase();
+    String normalizedEmail = normalizeEmail(email);
+    if (normalizedEmail == null || normalizedEmail.isBlank()) {
+      throw new IllegalArgumentException("Email is required");
+    }
     if (userRepository.existsByEmailIgnoreCase(normalizedEmail)) {
       throw new IllegalArgumentException("Email already exists");
     }
@@ -41,7 +45,7 @@ public class IdentityStore {
     String userId = UUID.randomUUID().toString();
 
     Tenant tenant = new Tenant(tenantId);
-    tenant.setName(tenantName);
+    tenant.setName(normalizeName(tenantName));
     tenant.setPlan("starter");
     tenant.setOwnerUid(userId);
     tenant.setCreatedAt(Instant.now());
@@ -50,7 +54,7 @@ public class IdentityStore {
     User user = new User(userId);
     user.setEmail(normalizedEmail);
     user.setPasswordHash(passwordEncoder.encode(password));
-    user.setDisplayName(displayName);
+    user.setDisplayName(normalizeName(displayName));
     user.setTenantId(tenantId);
     user.setRoles(List.of("owner"));
     user.setCreatedAt(Instant.now());
@@ -61,16 +65,37 @@ public class IdentityStore {
     }
   }
 
+  @Transactional
   public Optional<User> authenticate(String email, String password) {
-    System.out.println("Store::::::"+email);
-    Optional<User> user = userRepository.findByEmailIgnoreCase(email.toLowerCase());
+    System.out.println("Store::::::" + email);
+    String normalizedEmail = normalizeEmail(email);
+    if (normalizedEmail == null || normalizedEmail.isBlank()) {
+      return Optional.empty();
+    }
+    Optional<User> user = userRepository.findByEmailIgnoreCase(normalizedEmail);
     if (user.isEmpty()) {
       return Optional.empty();
     }
     User candidate = user.get();
-    if (!passwordEncoder.matches(password, candidate.getPasswordHash())) {
+    String storedHash = candidate.getPasswordHash();
+    if (storedHash == null || storedHash.isBlank()) {
       return Optional.empty();
     }
+    if (looksLikeBcryptHash(storedHash)) {
+      try {
+        if (!passwordEncoder.matches(password, storedHash)) {
+          return Optional.empty();
+        }
+      } catch (IllegalArgumentException ex) {
+        return Optional.empty();
+      }
+      return Optional.of(candidate);
+    }
+    if (!storedHash.equals(password)) {
+      return Optional.empty();
+    }
+    candidate.setPasswordHash(passwordEncoder.encode(password));
+    userRepository.save(candidate);
     return Optional.of(candidate);
   }
 
@@ -102,5 +127,23 @@ public class IdentityStore {
 
   public Optional<Tenant> findTenant(String tenantId) {
     return tenantRepository.findById(tenantId);
+  }
+
+  private static String normalizeEmail(String email) {
+    if (email == null) {
+      return null;
+    }
+    return email.trim().toLowerCase(Locale.ROOT);
+  }
+
+  private static String normalizeName(String value) {
+    return value == null ? null : value.trim();
+  }
+
+  private static boolean looksLikeBcryptHash(String value) {
+    if (value == null) {
+      return false;
+    }
+    return value.startsWith("$2a$") || value.startsWith("$2b$") || value.startsWith("$2y$");
   }
 }

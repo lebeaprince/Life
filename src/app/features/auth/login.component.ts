@@ -3,6 +3,7 @@ import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
+import { getErrorMessage } from '../../core/http-error';
 
 @Component({
   selector: 'app-login',
@@ -74,7 +75,9 @@ export class LoginComponent {
       await this.router.navigate(['/app']);
     } catch (error) {
       console.error(error);
-      this.errorMessage.set('Sign in failed. Please check your credentials.');
+      this.errorMessage.set(
+        getErrorMessage(error, 'Sign in failed. Please check your credentials.')
+      );
     } finally {
       this.isSubmitting.set(false);
     }
