@@ -24,12 +24,10 @@ export class AuthService {
 
   async signIn(email: string, password: string): Promise<void> {
     const normalizedEmail = this.normalizeEmail(email);
-    const response = await firstValueFrom(
-      this.http.post<AuthResponse>(`${environment.apiBaseUrl}/auth/login`, {
-        email: normalizedEmail,
-        password
-      })
-    );
+    const response = await this.requestAuthResponse(`${environment.apiBaseUrl}/auth/login`, {
+      email: normalizedEmail,
+      password
+    });
     this.persistSession(response);
   }
 
@@ -40,8 +38,9 @@ export class AuthService {
       displayName: this.normalizeName(payload.displayName),
       tenantName: this.normalizeName(payload.tenantName)
     };
-    const response = await firstValueFrom(
-      this.http.post<AuthResponse>(`${environment.apiBaseUrl}/auth/register`, normalizedPayload)
+    const response = await this.requestAuthResponse(
+      `${environment.apiBaseUrl}/auth/register`,
+      normalizedPayload
     );
     this.persistSession(response);
   }
@@ -67,6 +66,68 @@ export class AuthService {
         }
       }
     });
+  }
+
+  private async requestAuthResponse(url: string, payload: unknown): Promise<AuthResponse> {
+    const raw = await firstValueFrom(
+      this.http.post(url, payload, {
+        responseType: 'text' as const
+      })
+    );
+    return this.parseAuthResponse(raw);
+  }
+
+  private parseAuthResponse(raw: string): AuthResponse {
+    const sanitized = this.stripJsonPrefix(raw).trim();
+    if (!sanitized) {
+      throw new Error('Empty authentication response.');
+    }
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(sanitized);
+    } catch {
+      throw new Error('Unable to parse authentication response.');
+    }
+    const response = this.unwrapAuthResponse(parsed);
+    if (!response) {
+      throw new Error('Unexpected authentication response.');
+    }
+    return response;
+  }
+
+  private unwrapAuthResponse(payload: unknown): AuthResponse | null {
+    if (this.isAuthResponse(payload)) {
+      return payload;
+    }
+    if (payload && typeof payload === 'object') {
+      const wrapped = payload as { data?: unknown };
+      if (this.isAuthResponse(wrapped.data)) {
+        return wrapped.data;
+      }
+    }
+    return null;
+  }
+
+  private isAuthResponse(payload: unknown): payload is AuthResponse {
+    if (!payload || typeof payload !== 'object') {
+      return false;
+    }
+    const candidate = payload as { token?: unknown; profile?: unknown };
+    return typeof candidate.token === 'string' && this.isUserProfile(candidate.profile);
+  }
+
+  private isUserProfile(payload: unknown): payload is UserProfile {
+    if (!payload || typeof payload !== 'object') {
+      return false;
+    }
+    const candidate = payload as { uid?: unknown; email?: unknown };
+    return typeof candidate.uid === 'string' && typeof candidate.email === 'string';
+  }
+
+  private stripJsonPrefix(payload: string): string {
+    const trimmed = payload.trimStart();
+    const prefix = ")]}',";
+    return trimmed.startsWith(prefix) ? trimmed.slice(prefix.length) : payload;
   }
 
   private persistSession(response: AuthResponse): void {
