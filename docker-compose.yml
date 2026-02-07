@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:16-alpine
     ports:
-      - "5430:5432"
+      - "5430:5430"
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
@@ -44,7 +44,7 @@ services:
     environment:
       - EUREKA_SERVER_URL=http://discovery-service:8761/eureka
       - JWT_SECRET=identity5ecr3t31@
-      - DB_HOST=postgres
+      - DB_HOST=localhost
       - DB_PORT=5432
       - DB_NAME=postgres
       - DB_USER=postgres
@@ -60,7 +60,7 @@ services:
     environment:
       - EUREKA_SERVER_URL=http://discovery-service:8761/eureka
       - JWT_SECRET=identity5ecr3t31
-      - DB_HOST=postgres
+      - DB_HOST=localhost
       - DB_PORT=5432
       - DB_NAME=postgres
       - DB_USER=postgres
@@ -76,7 +76,7 @@ services:
     environment:
       - EUREKA_SERVER_URL=http://discovery-service:8761/eureka
       - JWT_SECRET=oderserviseserc3t1@
-      - DB_HOST=postgres
+      - DB_HOST=localhost
       - DB_PORT=5432
       - DB_NAME=postgres
       - DB_USER=postgres
@@ -93,7 +93,7 @@ services:
     environment:
       - EUREKA_SERVER_URL=http://discovery-service:8761/eureka
       - JWT_SECRET=settings5ecr3tk3y
-      - DB_HOST=postgres
+      - DB_HOST=localhost
       - DB_PORT=5432
       - DB_NAME=postgres
       - DB_USER=postgres
