@@ -24,6 +24,7 @@ import { OrderService } from '../../core/order.service';
             <span>Total</span>
             <span>Payment</span>
             <span>Status</span>
+            <span>Actions</span>
           </div>
           <div class="table-row" *ngFor="let order of orderService.orders$ | async">
             <span>{{ order.id }}</span>
@@ -31,6 +32,15 @@ import { OrderService } from '../../core/order.service';
             <span>{{ order.total | currency }}</span>
             <span>{{ paymentTypeLabel(order.paymentType) }}</span>
             <span class="badge">{{ order.status | titlecase }}</span>
+            <span>
+              <button
+                class="btn btn-ghost"
+                (click)="markReady(order.id)"
+                [disabled]="order.status === 'ready'"
+              >
+                Mark ready
+              </button>
+            </span>
           </div>
         </div>
       </div>
@@ -45,5 +55,9 @@ export class OrdersComponent {
       return 'Unknown';
     }
     return PAYMENT_TYPE_LABELS[type];
+  }
+
+  async markReady(orderId: string): Promise<void> {
+    await this.orderService.markOrderReady(orderId);
   }
 }

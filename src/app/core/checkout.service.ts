@@ -4,6 +4,15 @@ import { CartService } from './cart.service';
 import { OrderService } from './order.service';
 import { PaymentOption, PAYMENT_OPTIONS, PaymentType } from './models';
 
+export interface CheckoutOptions {
+  paymentType: PaymentType;
+  notifyWhenReady: boolean;
+  customerName: string;
+  customerPhone: string;
+  redeemReward: boolean;
+  totalOverride?: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CheckoutService {
   readonly totals$!: ReturnType<typeof combineLatest>;
@@ -26,7 +35,7 @@ export class CheckoutService {
     );
   }
 
-  async completeCheckout(paymentType: PaymentType = 'cash'): Promise<void> {
+  async completeCheckout(options: CheckoutOptions): Promise<void> {
     const [items, totals] = await firstValueFrom(
       combineLatest([this.cartService.items$, this.totals$]).pipe(take(1))
     );
@@ -35,12 +44,20 @@ export class CheckoutService {
       return;
     }
 
+    const total = options.redeemReward ? 0 : totals['total'];
+    const totalOverride = options.totalOverride;
+    const finalTotal = typeof totalOverride === 'number' ? totalOverride : total;
+
     await this.orderService.createOrder({
       items,
       subtotal: totals['subtotal'],
       tax: totals['tax'],
-      total: totals['total'],
-      paymentType
+      total: finalTotal,
+      paymentType: options.paymentType,
+      notifyWhenReady: options.notifyWhenReady,
+      customerName: options.notifyWhenReady ? options.customerName : undefined,
+      customerPhone: options.notifyWhenReady ? options.customerPhone : undefined,
+      redeemReward: options.redeemReward
     });
 
     this.cartService.clear();

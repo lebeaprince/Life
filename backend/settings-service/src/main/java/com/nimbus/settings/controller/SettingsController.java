@@ -33,7 +33,11 @@ public class SettingsController {
         tenantId,
         request.currency(),
         request.taxRate(),
-        request.lowStockThreshold()
+        request.lowStockThreshold(),
+        request.loyaltyEnabled(),
+        request.loyaltyPointsPerOrder(),
+        request.loyaltyRewardThreshold(),
+        request.orderReadyNotificationsEnabled()
     );
     return toResponse(updated);
   }
@@ -42,19 +46,31 @@ public class SettingsController {
     return new SettingsResponse(
         settings.getCurrency(),
         settings.getTaxRate(),
-        settings.getLowStockThreshold()
+        settings.getLowStockThreshold(),
+        settings.isLoyaltyEnabled(),
+        settings.getLoyaltyPointsPerOrder(),
+        settings.getLoyaltyRewardThreshold(),
+        settings.isOrderReadyNotificationsEnabled()
     );
   }
 
   public record SettingsRequest(
       String currency,
       Double taxRate,
-      @Min(0) Integer lowStockThreshold
+      @Min(0) Integer lowStockThreshold,
+      Boolean loyaltyEnabled,
+      @Min(0) Integer loyaltyPointsPerOrder,
+      @Min(0) Integer loyaltyRewardThreshold,
+      Boolean orderReadyNotificationsEnabled
   ) {}
 
   public record SettingsResponse(
       String currency,
       double taxRate,
-      int lowStockThreshold
+      int lowStockThreshold,
+      boolean loyaltyEnabled,
+      int loyaltyPointsPerOrder,
+      int loyaltyRewardThreshold,
+      boolean orderReadyNotificationsEnabled
   ) {}
 }

@@ -95,6 +95,38 @@ import { TenantService } from '../../core/tenant.service';
         </form>
       </div>
     </section>
+
+    <section class="page-grid">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h4>Loyalty & notifications</h4>
+            <p class="muted">Configure points and ready notifications.</p>
+          </div>
+        </div>
+        <form [formGroup]="form" (ngSubmit)="save()" class="form-grid two-col">
+          <label class="field checkbox">
+            <span>Loyalty program enabled</span>
+            <input type="checkbox" formControlName="loyaltyEnabled" />
+          </label>
+          <label class="field checkbox">
+            <span>Order ready notifications</span>
+            <input type="checkbox" formControlName="orderReadyNotificationsEnabled" />
+          </label>
+          <label class="field">
+            <span>Points per order</span>
+            <input type="number" step="1" formControlName="loyaltyPointsPerOrder" />
+          </label>
+          <label class="field">
+            <span>Points for a free order</span>
+            <input type="number" step="1" formControlName="loyaltyRewardThreshold" />
+          </label>
+          <div class="field">
+            <button class="btn btn-primary" type="submit">Save settings</button>
+          </div>
+        </form>
+      </div>
+    </section>
   `
 })
 export class SettingsComponent {
@@ -109,7 +141,11 @@ export class SettingsComponent {
     this.form = this.formBuilder.nonNullable.group({
       currency: ['', [Validators.required]],
       taxRate: [0, [Validators.required, Validators.min(0)]],
-      lowStockThreshold: [5, [Validators.required, Validators.min(0)]]
+      lowStockThreshold: [5, [Validators.required, Validators.min(0)]],
+      loyaltyEnabled: [true],
+      orderReadyNotificationsEnabled: [true],
+      loyaltyPointsPerOrder: [10, [Validators.required, Validators.min(0)]],
+      loyaltyRewardThreshold: [100, [Validators.required, Validators.min(0)]]
     });
 
     this.settingsService.settings$.pipe(take(1)).subscribe((settings) => {

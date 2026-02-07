@@ -1,7 +1,9 @@
 package com.nimbus.order.controller;
 
 import com.nimbus.order.client.CatalogClient;
+import com.nimbus.order.client.SettingsClient;
 import com.nimbus.order.config.RequestContext;
+import com.nimbus.order.loyalty.LoyaltyProgramSettings;
 import com.nimbus.order.model.Order;
 import com.nimbus.order.model.OrderItem;
 import com.nimbus.order.store.OrderStore;
@@ -15,7 +17,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,10 +35,16 @@ public class OrderController {
 
   private final OrderStore orderStore;
   private final CatalogClient catalogClient;
+  private final SettingsClient settingsClient;
 
-  public OrderController(OrderStore orderStore, CatalogClient catalogClient) {
+  public OrderController(
+      OrderStore orderStore,
+      CatalogClient catalogClient,
+      SettingsClient settingsClient
+  ) {
     this.orderStore = orderStore;
     this.catalogClient = catalogClient;
+    this.settingsClient = settingsClient;
   }
 
   @GetMapping
@@ -66,16 +76,68 @@ public class OrderController {
       throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Unable to adjust inventory", ex);
     }
 
-    Order order = orderStore.createOrder(
-        tenantId,
-        userId,
-        items,
-        request.subtotal(),
-        request.tax(),
-        request.total(),
-        paymentType
-    );
-    return toResponse(order);
+    boolean notifyWhenReady = Boolean.TRUE.equals(request.notifyWhenReady());
+    boolean redeemReward = Boolean.TRUE.equals(request.redeemReward());
+    if (notifyWhenReady) {
+      if (!StringUtils.hasText(request.customerName())
+          || !StringUtils.hasText(request.customerPhone())) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Customer name and phone are required for ready notifications"
+        );
+      }
+    }
+    if (redeemReward && !notifyWhenReady) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Redeem requires ready notification opt-in"
+      );
+    }
+
+    LoyaltyProgramSettings loyaltySettings = settingsClient.getLoyaltySettings(authHeader);
+    if (redeemReward && !loyaltySettings.loyaltyEnabled()) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Loyalty program is disabled"
+      );
+    }
+
+    try {
+      Order order = orderStore.createOrder(
+          tenantId,
+          userId,
+          items,
+          request.subtotal(),
+          request.tax(),
+          request.total(),
+          paymentType,
+          notifyWhenReady,
+          request.customerName(),
+          request.customerPhone(),
+          redeemReward,
+          loyaltySettings
+      );
+      return toResponse(order);
+    } catch (IllegalArgumentException ex) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+    }
+  }
+
+  @PostMapping("/{orderId}/ready")
+  public OrderResponse markReady(
+      @PathVariable("orderId") String orderId,
+      HttpServletRequest httpRequest
+  ) {
+    String tenantId = RequestContext.require().tenantId();
+    String userId = RequestContext.require().userId();
+    String authHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
+    LoyaltyProgramSettings loyaltySettings = settingsClient.getLoyaltySettings(authHeader);
+    try {
+      Order order = orderStore.markReady(tenantId, orderId, userId, loyaltySettings);
+      return toResponse(order);
+    } catch (IllegalArgumentException ex) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage(), ex);
+    }
   }
 
   private OrderItem toItem(OrderItemRequest request) {
@@ -117,7 +179,11 @@ public class OrderController {
       double subtotal,
       double tax,
       double total,
-      String paymentType
+      String paymentType,
+      Boolean notifyWhenReady,
+      String customerName,
+      String customerPhone,
+      Boolean redeemReward
   ) {}
 
   public record OrderItemRequest(
