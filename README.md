@@ -55,3 +55,4 @@ The UI will be available at `http://localhost:4200` and the API gateway at
   - `src/environments/environment.prod.ts`
 - The backend uses in-memory storage for scaffolding. Restarting containers resets data.
 - Set `JWT_SECRET` in `docker-compose.yml` (or your deployment environment) for production.
+  Use a value that is at least 32 ASCII characters (256 bits) for HMAC SHA-256.

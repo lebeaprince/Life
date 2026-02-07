@@ -2,7 +2,7 @@ server:
   port: 8083
 
 jwt:
-  secret: oderserviseserc3t1@
+  secret: nimbus-dev-jwt-secret-key-32-bytes!!
 
 catalog:
   base-url: http://catalog-service

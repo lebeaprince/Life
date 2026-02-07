@@ -2,7 +2,7 @@ server:
   port: 8081
 
 jwt:
-  secret: identity5ecr3t31@
+  secret: nimbus-dev-jwt-secret-key-32-bytes!!
 spring:
   application:
     name: identity-service
