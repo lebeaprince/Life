@@ -67,8 +67,7 @@ import { TenantService } from '../../core/tenant.service';
 export class ShellComponent {
   readonly navItems = [
     { label: 'Dashboard', path: '/app/dashboard', icon: 'DB' },
-    { label: 'POS', path: '/app/pos', icon: 'POS' },
-    { label: 'Checkout', path: '/app/checkout', icon: 'CHK' },
+    { label: 'Sale', path: '/app/pos', icon: 'SAL' },
     { label: 'Products', path: '/app/products', icon: 'PR' },
     { label: 'Inventory', path: '/app/inventory', icon: 'INV' },
     { label: 'Orders', path: '/app/orders', icon: 'ORD' },
