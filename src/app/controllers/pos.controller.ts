@@ -58,6 +58,13 @@ export class PosController {
   }
 
   async checkout(): Promise<void> {
-    await this.checkoutService.completeCheckout();
+    await this.checkoutService.completeCheckout({
+      paymentType: 'cash',
+      notifyWhenReady: false,
+      customerName: '',
+      customerPhone: '',
+      redeemReward: false,
+      totalOverride: 0
+    });
   }
 }

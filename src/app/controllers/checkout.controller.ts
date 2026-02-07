@@ -89,12 +89,12 @@ export class CheckoutController {
     ]).pipe(
       map(([totals, summary, redeemReward]) => {
         const canRedeem = !!summary?.rewardAvailable && redeemReward;
-        const discount = canRedeem ? totals.total : 0;
+        const discount = canRedeem ? totals['total'] : 0;
         return {
-          subtotal: totals.subtotal,
-          tax: totals.tax,
+          subtotal: totals['subtotal'],
+          tax: totals['tax'],
           discount,
-          total: Math.max(0, totals.total - discount)
+          total: Math.max(0, totals['total'] - discount)
         };
       })
     );
